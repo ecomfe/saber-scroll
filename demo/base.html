@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>ViewPort</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <script src="http://s1.bdstatic.com/r/www/cache/ecom/esl/1-6-6/esl.js"></script>
+    <script>
+        require.config({
+            packages: [
+                {
+                    name: 'saber-scroll',
+                    location: '../src'
+                },
+                {
+                    name: 'saber-lang',
+                    location: './dep/saber-lang/src'
+                },
+                {
+                    name: 'saber-dom',
+                    location: './dep/saber-dom/src'
+                },
+                {
+                    name: 'saber-emitter',
+                    main: 'emitter',
+                    location: './dep/saber-emitter/src'
+                }
+            ]
+        });
+    </script>
+    <style>
+        .box {
+            margin-left: 10px;
+            width: 80px;
+            height: 200px;
+            float: left;
+            border: 1px solid #CCC;
+        }
+
+        .outer-a {
+            overflow: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .outer-b {
+            overflow: hidden;
+        }
+
+        .log {
+            font-size: 12px;
+            line-height: 1.5;
+            border: 1px solid #CCC;
+            padding: 0 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box outer-a">
+        <div style="overflow:hidden">
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+        </div>
+    </div>
+    <div id="outer" class="box outer-b">
+        <div style="overflow:hidden">
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+        </div>
+    </div>
+    <div id="outer2" class="box" style="overflow:hidden">
+        <div style="overflow:hidden">
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+        </div>
+    </div>
+    <script src="dep/iscroll.js"></script>
+    <script>
+        require(['saber-scroll'], function (scroll) {
+            var outer = scroll(document.getElementById('outer'));
+
+            outer.on('scroll', function (e) {
+                console.log(e.top);
+                console.log(e.left);
+            });
+
+            new IScroll('#outer2');
+        });
+    </script>
+</body>
+</html>

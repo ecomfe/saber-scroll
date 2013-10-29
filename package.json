@@ -1,0 +1,17 @@
+{
+    "name": "saber-scroll",
+    "version": "0.1.0",
+    "description": "提供区域滚动",
+    "main": "main",
+    "maintainers": [
+        { "name": "treelite", "email": "c.xinle@gmail.com" }
+    ],
+    "dependencies": {
+        "saber-lang": "~0.1.0",
+        "saber-dom": "~0.1.0",
+        "saber-emitter": "~0.1.0"
+    },
+    "license": "BSD",
+    "repository": "git://github.com/ecomfe/saber-scroll.git",
+    "bugs": "https://github.com/ecomfe/saber-scroll/issues"
+}
