@@ -24,6 +24,15 @@
                     name: 'saber-emitter',
                     main: 'emitter',
                     location: './dep/saber-emitter/src'
+                },
+                {
+                    name: 'saber-run',
+                    location: './dep/saber-run/src'
+                },
+                {
+                    name: 'saber-promise',
+                    main: 'promise',
+                    location: './dep/saber-promise/src'
                 }
             ]
         });
@@ -51,6 +60,18 @@
             line-height: 1.5;
             border: 1px solid #CCC;
             padding: 0 3px;
+        }
+
+        .box-h {
+            clear: both;
+            border: 1px solid #CCC;
+            height: 200px;
+            width: 200px;
+            overflow: hidden;
+        }
+
+        .box-h .inner {
+            width: 400px;
         }
     </style>
 </head>
@@ -111,35 +132,11 @@
             <p>hello world</p>
         </div>
     </div>
-    <div id="outer2" class="box" style="overflow:hidden">
-        <div style="overflow:hidden">
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
+    <div class="box-h" id="outerH">
+        <div class="inner">
+            <p>中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试</p>
         </div>
     </div>
-    <script src="dep/iscroll.js"></script>
     <script>
         require(['saber-scroll'], function (scroll) {
             var outer = scroll(document.getElementById('outer'));
@@ -149,7 +146,7 @@
                 console.log(e.left);
             });
 
-            new IScroll('#outer2');
+            var outerH = scroll(document.getElementById('outerH'));
         });
     </script>
 </body>

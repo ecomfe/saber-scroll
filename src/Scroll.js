@@ -9,6 +9,7 @@ define(function (require) {
     var extend = require('saber-lang/extend');
     var curry = require('saber-lang/curry');
     var Emitter = require('saber-emitter');
+    var runner = require('saber-run');
     var util = require('./util');
 
     /**
@@ -26,17 +27,21 @@ define(function (require) {
      * @inner
      * @param {Object} scroll
      * @param {number} dt 动画时间
+     * @return {Promise}
      */
     function render(scroll, dt) {
         var x = scroll.info.left;
         var y = scroll.info.top;
-        var ele = scroll.main;
         dt = dt || 0;
 
-        // FIXME
-        ele.style.cssText += ';-webkit-transform:translate('+ x +'px, '+ y +'px)'
-                            + ';-webkit-transition-duration:' + dt + 's'
-                            + ';-webkit-transition-timing-function:ease-out';
+        return runner.transition(
+                scroll.main,
+                { transform: 'translate3d(' + x + 'px, ' + y + 'px, 0)' },
+                {
+                    duration: dt,
+                    timing: 'ease-out'
+                }
+            );
     }
 
     /**
@@ -65,14 +70,9 @@ define(function (require) {
         info.left = Math.max(Math.min(0, info.left), scroll.minX);
         info.top = Math.max(Math.min(0, info.top), scroll.minY);
 
-        render(scroll, 0.5);
-        // FIXME
-        setTimeout(
-            function () {
-                info.status = STATUS.IDLE;
-            },
-            500
-        );
+        render(scroll, 0.5).then(function () {
+            info.status = STATUS.IDLE;
+        });
     }
 
     /**
@@ -102,7 +102,7 @@ define(function (require) {
                 y: speed.y ? (speed.y > 0 ? -1 : 1) * acceleration : 0
             };
 
-        var time = util.now();
+        var time = runner.now();
 
         function step() {
 
@@ -110,7 +110,7 @@ define(function (require) {
                 return;
             }
 
-            var now = util.now();
+            var now = runner.now();
             var dt = now - time;
 
             // 当前速度
@@ -136,19 +136,19 @@ define(function (require) {
             if (speed.x 
                 && (info.left > 0 || info.left < scroll.minX)
             ) {
-                acce.x *= 3;
+                acce.x *= 5;
             }
             
             if (speed.y
                 && (info.top > 0 || info.top < scroll.minY)
             ) {
-                acce.y *= 3;
+                acce.y *= 5;
             }
             
             // 任意方向还存在速度
             // 则继续缓动
             if (speed.x + speed.y) {
-                info.frame = util.requestAnimationFrame(step);
+                info.frame = runner.requestAnimationFrame(step);
             }
             else {
                 // 缓动完成 检查是否在滚动范围内
@@ -159,7 +159,7 @@ define(function (require) {
             }
         }
 
-        info.frame = util.requestAnimationFrame(step);
+        info.frame = runner.requestAnimationFrame(step);
     }
 
     /**
@@ -177,14 +177,14 @@ define(function (require) {
         // 如果有动画
         // 先取消
         if (info.frame) {
-            util.cancelAnimationFrame(info.frame);
+            runner.cancelAnimationFrame(info.frame);
             info.frame = null;
         }
 
         var touch = e.touches ? e.touches[0] : e;
         info.pointX = touch.clientX || touch.pageX;
         info.pointY = touch.clientY || touch.pageY;
-        info.time = util.now();
+        info.time = runner.now();
         info.dx = info.dy = 0;
         info.dt = 0;
 
@@ -227,7 +227,7 @@ define(function (require) {
         render(scroll);
         scroll.emit('scroll', {left: info.left, top: info.top});
 
-        var now = util.now();
+        var now = runner.now();
         info.dt = now - info.time;
         info.time = now;
     }
@@ -268,8 +268,8 @@ define(function (require) {
 
         // FIXME
         // 考虑padding情况
-        scroll.minX = wrapper.clientWidth - ele.offsetWidth;
-        scroll.minY = wrapper.clientHeight - ele.offsetHeight;
+        scroll.minX = Math.min(wrapper.clientWidth - ele.offsetWidth, 0);
+        scroll.minY = Math.min(wrapper.clientHeight - ele.offsetHeight, 0);
 
         scroll.vertical = scroll.vertical !== false && scroll.minY < 0;
         scroll.horizontal = scroll.horizontal !== false && scroll.minX < 0;
@@ -290,7 +290,7 @@ define(function (require) {
         }
 
         this.main = ele;
-        var propertys = extend(DEFAUTL_PROPERTYS, options);
+        var propertys = extend({}, DEFAUTL_PROPERTYS, options);
         Object.keys(propertys).forEach(function (key) {
             this[key] = propertys[key];
         });
