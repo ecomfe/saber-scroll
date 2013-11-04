@@ -266,10 +266,8 @@ define(function (require) {
         var ele = scroll.main;
         var wrapper = ele.parentNode;
 
-        // FIXME
-        // 考虑padding情况
-        scroll.minX = Math.min(wrapper.clientWidth - ele.offsetWidth, 0);
-        scroll.minY = Math.min(wrapper.clientHeight - ele.offsetHeight, 0);
+        scroll.minX = wrapper.clientWidth - wrapper.scrollWidth;
+        scroll.minY = wrapper.clientHeight - wrapper.scrollHeight;
 
         scroll.vertical = scroll.vertical !== false && scroll.minY < 0;
         scroll.horizontal = scroll.horizontal !== false && scroll.minX < 0;
