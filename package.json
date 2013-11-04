@@ -1,7 +1,7 @@
 {
     "name": "saber-scroll",
     "version": "0.1.0",
-    "description": "提供区域滚动",
+    "description": "为移动端页面开发提供区域滚动功能",
     "main": "main",
     "maintainers": [
         { "name": "treelite", "email": "c.xinle@gmail.com" }
