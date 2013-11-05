@@ -7,9 +7,9 @@
         { "name": "treelite", "email": "c.xinle@gmail.com" }
     ],
     "dependencies": {
-        "saber-lang": "~0.1.0",
-        "saber-dom": "~0.1.0",
-        "saber-emitter": "~0.1.0",
+        "saber-lang": "~0.2.0",
+        "saber-dom": "~0.3.0",
+        "saber-emitter": "~0.3.0",
         "saber-run": "~0.1.0"
     },
     "license": "BSD",
