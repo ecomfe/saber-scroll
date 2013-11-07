@@ -1,10 +1,14 @@
 # saber-scroll
 
-为移动端页面开发提供区域滚动功能
+为移动端页面提供区域滚动功能
 
 提供元素内容垂直、水平滚动
 
 ## Usage
+
+通过`edp`引入模块
+
+    edp import saber-scroll
 
 ```javascript
 var scroll = require('saber-scroll');
@@ -28,7 +32,11 @@ __只滚动区域的第一个子元素__，如果想让区域中的所有元素�
 
 ### scroll(ele, options)
 
-使元素可滚动
+使元素内容可滚动
+
+* `ele` 内容需要滚动的元素
+* `options` 初始化参数
+* `options.scrollbar` 是否显示滚动条，默认为`false`
 
 #### Scroller
 
