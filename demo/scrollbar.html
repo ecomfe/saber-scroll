@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Scroll</title>
+    <title>Scroll - Scrollbar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
     <script src="http://s1.bdstatic.com/r/www/cache/ecom/esl/1-6-6/esl.js"></script>
     <script>
@@ -38,45 +38,17 @@
         });
     </script>
     <style>
-        .box {
-            margin-left: 10px;
-            width: 80px;
-            height: 200px;
-            float: left;
+        .outer {
+            position: absolute;
             border: 1px solid #CCC;
-        }
-
-        .outer-a {
-            overflow: scroll;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .outer-b {
-            overflow: hidden;
-        }
-
-        .log {
-            font-size: 12px;
-            line-height: 1.5;
-            border: 1px solid #CCC;
-            padding: 0 3px;
-        }
-
-        .box-h {
-            clear: both;
-            border: 1px solid #CCC;
-            height: 200px;
+            height: 300px;
             width: 200px;
             overflow: hidden;
-        }
-
-        .box-h .inner {
-            width: 400px;
         }
     </style>
 </head>
 <body>
-    <div class="box outer-a">
+    <div class="outer" id="box">
         <div style="overflow:hidden">
             <p>hello world</p>
             <p>hello world</p>
@@ -102,51 +74,16 @@
             <p>hello world</p>
             <p>hello world</p>
             <p>hello world</p>
-        </div>
-    </div>
-    <div id="outer" class="box outer-b">
-        <div style="overflow:hidden">
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-            <p>hello world</p>
-        </div>
-    </div>
-    <div class="box-h" id="outerH">
-        <div class="inner">
-            <p>中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试</p>
         </div>
     </div>
     <script>
-        require(['saber-scroll'], function (scroll) {
-            var outer = scroll(document.getElementById('outer'));
-
-            outer.on('scroll', function (e) {
-                console.log(e.top);
-                console.log(e.left);
-            });
-
-            var outerH = scroll(document.getElementById('outerH'));
+        require(['saber-scroll', 'saber-scroll/plugin/scrollbar'], function (scroll) {
+            var outer = scroll(
+                    document.getElementById('box'),
+                    {
+                        scrollbar: true
+                    }
+                );
         });
     </script>
 </body>

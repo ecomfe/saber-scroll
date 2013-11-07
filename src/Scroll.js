@@ -11,6 +11,8 @@ define(function (require) {
     var Emitter = require('saber-emitter');
     var runner = require('saber-run');
     var util = require('./util');
+    var plugin = require('./plugin');
+
 
     /**
      * 状态值枚举
@@ -33,6 +35,8 @@ define(function (require) {
         var x = scroll.info.left;
         var y = scroll.info.top;
         dt = dt || 0;
+
+        scroll.emit(':render', extend({duration: dt}, scroll.info));
 
         return runner.transition(
                 scroll.main,
@@ -72,6 +76,7 @@ define(function (require) {
 
         render(scroll, 0.5).then(function () {
             info.status = STATUS.IDLE;
+            scroll.emit(':end');
         });
     }
 
@@ -156,6 +161,9 @@ define(function (require) {
                     info.status = STATUS.SCROLLING;
                     resetScroll(scroll);
                 }
+                else {
+                    scroll.emit(':end');
+                }
             }
         }
 
@@ -190,6 +198,8 @@ define(function (require) {
 
         info.status = STATUS.SCROLLING;
         scroll.info = info;
+
+        scroll.emit(':start');
     }
 
     /**
@@ -269,6 +279,11 @@ define(function (require) {
         scroll.minX = wrapper.clientWidth - wrapper.scrollWidth;
         scroll.minY = wrapper.clientHeight - wrapper.scrollHeight;
 
+        scroll.scrollHeight = wrapper.scrollHeight;
+        scroll.scrollWidth = wrapper.scrollWidth;
+        scroll.clientHeight = wrapper.clientHeight;
+        scroll.clientWidth = wrapper.clientWidth;
+
         scroll.vertical = scroll.vertical !== false && scroll.minY < 0;
         scroll.horizontal = scroll.horizontal !== false && scroll.minX < 0;
 
@@ -276,10 +291,27 @@ define(function (require) {
         util.addEvent(ele, 'touchmove', curry(scrollMoveHandler, scroll));
         util.addEvent(ele, 'touchcanel', curry(scrollEndHandler, scroll));
         util.addEvent(ele, 'touchend', curry(scrollEndHandler, scroll));
+
+        if (scroll.scrollbar) {
+            plugin.enable('scrollbar', scroll);
+        }
     }
 
-    var DEFAUTL_PROPERTYS = {};
+    /**
+     * 默认配置项
+     *
+     * @type {Object}
+     */
+    var DEFAUTL_PROPERTYS = {
+            // 是否显示滚动条
+            scrollbar: false 
+        };
 
+    /**
+     * Scroll
+     *
+     * @constructor
+     */
     function Scroll(ele, options) {
         ele = dom.children(ele)[0];
 
@@ -289,8 +321,9 @@ define(function (require) {
 
         this.main = ele;
         var propertys = extend({}, DEFAUTL_PROPERTYS, options);
+        var me = this;
         Object.keys(propertys).forEach(function (key) {
-            this[key] = propertys[key];
+            me[key] = propertys[key];
         });
 
         initScroll(this);
