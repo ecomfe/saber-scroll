@@ -129,31 +129,64 @@ define(function (require) {
     function Scrollbar(scroll) {
         this.scroll = scroll;
 
+        this.reset();
+
+        this.timer = {};
+
+        var events = this.eventHandler = {
+            render: bind(this.render, this),
+            start: bind(this.show, this),
+            end: bind(this.hide, this, 800)
+        };
+
+        Object.keys(events).forEach(function (eventName) {
+            scroll.on(':' + eventName, events[eventName]);
+        });
+    }
+
+    /**
+     * 重置滚动条
+     *
+     * @public
+     */
+    Scrollbar.prototype.reset = function () {
+        var scroll = this.scroll;
+
         var ele;
         var wrapper = scroll.main.parentNode;
 
         if (scroll.vertical) {
-            ele = this.verticalBar = createBar(
-                'vertical',
-                wrapper.clientHeight / wrapper.scrollHeight
-            );
-            wrapper.appendChild(ele);
+            if (this.verticalBar) {
+                this.verticalBar.style.display = '';
+            }
+            else {
+                ele = this.verticalBar = createBar(
+                    'vertical',
+                    wrapper.clientHeight / wrapper.scrollHeight
+                );
+                wrapper.appendChild(ele);
+            }
+        }
+        else if (this.verticalBar) {
+            this.verticalBar.style.display = 'none';
         }
 
         if (scroll.horizontal) {
-            ele = this.horizontalBar = createBar(
-                'horizontal',
-                wrapper.clientWidth / wrapper.scrollWidth
-            );
-            wrapper.appendChild(ele);
+            if (this.horizontalBar) {
+                this.horizontalBar.style.display = '';
+            }
+            else {
+                ele = this.horizontalBar = createBar(
+                    'horizontal',
+                    wrapper.clientWidth / wrapper.scrollWidth
+                );
+                wrapper.appendChild(ele);
+            }
         }
-
-        this.timer = {};
-
-        scroll.on(':render', bind(this.render, this));
-        scroll.on(':start', bind(this.show, this));
-        scroll.on(':end', bind(this.hide, this, 800));
-    }
+        else if (this.horizontalBar) {
+            this.horizontalBar.style.display = 'none';
+        }
+    };
 
     /**
      * 显示滚动条
@@ -251,6 +284,33 @@ define(function (require) {
                 }
             );
         }
+    };
+
+    /**
+     * 销毁滚动条
+     *
+     * @public
+     */
+    Scrollbar.prototype.destroy = function () {
+        var scroll = this.scroll;
+        var events = this.eventHandler;
+
+        Object.keys(events).forEach(function (eventName) {
+            scroll.off(':' + eventName, events[eventName]);
+        });
+
+        var ele;
+        if (ele = this.horizontalBar) {
+            ele.parentNode.removeChild(ele);
+            this.horizontalBar = null;
+        }
+
+        if (ele = this.verticalBar) {
+            ele.parentNode.removeChild(ele);
+            this.verticalBar = null;
+        }
+
+        this.scroll = null;
     };
 
     // 注册插件

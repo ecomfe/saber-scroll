@@ -13,16 +13,57 @@ define(function () {
      * 启用插件
      *
      * @public
-     * @param {string} name
      * @param {Scroll} scroll
+     * @param {string} name
      * @param {Object=} options
      */
-    exports.enable = function (name, scroll, options) {
+    exports.enable = function (scroll, name, options) {
         var plugin = plugins[name];
+        var enablePlugins = scroll.plugins || {};
         
-        if (plugin) {
-            plugin(scroll, options);
+        if (plugin && !enablePlugins[name]) {
+            enablePlugins[name] = plugin(scroll, options);
+            scroll.plugins = enablePlugins;
         }
+    };
+
+    /**
+     * 禁用插件
+     *
+     * @public
+     * @param {Scroll} scroll
+     * @param {string=} name
+     */
+    exports.disable = function (scroll, name) {
+        var names;
+
+        if (name) {
+            names = [name];
+        }
+        else {
+            names = Object.keys(scroll.plugins || {});
+        }
+
+        names.forEach(function (item) {
+            if (scroll.plugins[item]) {
+                scroll.plugins[item].destroy && scroll.plugins[item].destroy();
+                delete scroll.plugins[item];
+            }
+        });
+    };
+
+    /**
+     * 重置所有插件
+     *
+     * @public
+     * @param {Scroll}
+     */
+    exports.reset = function (scroll) {
+        var enablePlugins = scroll.plugins || {};
+
+        Object.keys(enablePlugins).forEach(function (name) {
+            enablePlugins[name].reset && enablePlugins[name].reset();
+        });
     };
 
     /**

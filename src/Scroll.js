@@ -20,7 +20,8 @@ define(function (require) {
      */
     var STATUS = {
             IDLE: 0, // 空闲状态
-            SCROLLING: 1, // 滚动中
+            PREPARE: 1, // 准备状态
+            SCROLLING: 2, // 滚动中
         };
 
     /**
@@ -200,7 +201,7 @@ define(function (require) {
     function scrollStartHandler(scroll, e) {
         var info = scroll.info;
 
-        if (info.status) {
+        if (info.status == STATUS.SCROLLING) {
             return;
         }
 
@@ -218,10 +219,8 @@ define(function (require) {
         info.dx = info.dy = 0;
         info.dt = 0;
 
-        info.status = STATUS.SCROLLING;
+        info.status = STATUS.PREPARE;
         scroll.info = info;
-
-        scroll.emit(':start');
     }
 
     /**
@@ -232,11 +231,9 @@ define(function (require) {
     function scrollMoveHandler(scroll, e) {
         var info = scroll.info;
 
-        if (!info || !info.status) {
+        if (!info.status) {
             return;
         }
-
-        e.preventDefault();
 
         var touch = e.touches ? e.touches[0] : e;
         var dx = scroll.horizontal 
@@ -245,6 +242,19 @@ define(function (require) {
         var dy = scroll.vertical 
                     ? (touch.clientY || touch.pageY) - info.pointY
                     : 0;
+
+        // 忽略过短的移动
+        if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+            return;
+        }
+
+        if (info.status == STATUS.PREPARE) {
+            // 进入滚动状态
+            info.status = STATUS.SCROLLING;
+            scroll.emit(':start');
+        }
+
+        e.preventDefault();
 
         info.pointX += dx;
         info.pointY += dy;
@@ -277,7 +287,8 @@ define(function (require) {
     function scrollEndHandler(scroll) {
         var info = scroll.info;
 
-        if (!info || info.status !== STATUS.SCROLLING) {
+        if (info.status !== STATUS.SCROLLING) {
+            info.status = STATUS.IDLE;
             return;
         }
 
@@ -290,25 +301,15 @@ define(function (require) {
             finishScroll(scroll);
         }
     }
-
-
+    
     /**
-     * 初始化
+     * 计算可滚动范围
      *
      * @inner
+     * @param {Scroll} scroll
      */
-    function initScroll(scroll) {
-        Emitter.mixin(scroll);
-
-        var ele = scroll.main;
-        var wrapper = ele.parentNode;
-
-        // 滚动信息
-        scroll.info = {
-            top: 0, 
-            left: 0,
-            status: STATUS.IDLE
-        };
+    function calculate(scroll) {
+        var wrapper = scroll.main.parentNode;
 
         scroll.minX = wrapper.clientWidth - wrapper.scrollWidth;
         scroll.minY = wrapper.clientHeight - wrapper.scrollHeight;
@@ -320,15 +321,60 @@ define(function (require) {
 
         scroll.vertical = scroll.vertical !== false && scroll.minY < 0;
         scroll.horizontal = scroll.horizontal !== false && scroll.minX < 0;
+    }
 
-        util.addEvent(ele, 'touchstart', curry(scrollStartHandler, scroll));
-        util.addEvent(ele, 'touchmove', curry(scrollMoveHandler, scroll));
-        util.addEvent(ele, 'touchcanel', curry(scrollEndHandler, scroll));
-        util.addEvent(ele, 'touchend', curry(scrollEndHandler, scroll));
+    /**
+     * 初始化
+     *
+     * @inner
+     */
+    function initScroll(scroll) {
+        Emitter.mixin(scroll);
+
+        var ele = scroll.main;
+
+        // 滚动信息
+        scroll.info = {
+            top: 0, 
+            left: 0,
+            status: STATUS.IDLE
+        };
+
+        calculate(scroll);
+
+        var events = scroll.eventHanlder = {
+            touchstart: curry(scrollStartHandler, scroll),
+            touchmove: curry(scrollMoveHandler, scroll),
+            touchcanel: curry(scrollEndHandler, scroll),
+            touchend: curry(scrollEndHandler, scroll)
+        };
+
+        Object.keys(events).forEach(function (eventName) {
+            util.addEvent(ele, eventName, events[eventName]);
+        });
 
         if (scroll.scrollbar) {
-            plugin.enable('scrollbar', scroll);
+            plugin.enable(scroll, 'scrollbar');
         }
+    }
+
+    /**
+     * 滚动到确定位置
+     *
+     * @inner
+     */
+    function scrollTo(scroll, top, left, duration) {
+        var pos = {
+                top: top,
+                left: left,
+                duration: duration || 0
+            };
+        
+        // 修正滚动范围
+        pos.top = Math.min(0, Math.max(scroll.minY, pos.top));
+        pos.left = Math.min(0, Math.max(scroll.minX, pos.left));
+
+        render(scroll, pos);
     }
 
     /**
@@ -364,6 +410,35 @@ define(function (require) {
     }
 
     /**
+     * 重绘滚动
+     * 在滚动内容修改后使用
+     *
+     * @public
+     */
+    Scroll.prototype.repaint = function () {
+        calculate(this);
+        plugin.reset(this);
+        scrollTo(this, this.info.top, this.info.left);
+    };
+
+    /**
+     * 销毁滚动
+     *
+     * @public
+     */
+    Scroll.prototype.destroy = function () {
+        var ele = this.main;
+        var events = this.eventHanlder;
+
+        Object.keys(events).forEach(function (eventName) {
+            util.removeEvent(ele, eventName, events[eventName]);
+        });
+
+        plugin.disable(this);
+        this.main = null;
+    };
+
+    /**
      * 滚动到确定位置
      *
      * @public
@@ -372,27 +447,18 @@ define(function (require) {
      */
     Scroll.prototype.scrollTo = function () {
         var args = Array.prototype.slice.call(arguments);
-        var pos = {
-                top: this.info.top,
-                left: this.info.left
-            };
+        var top = this.info.top;
+        var left = this.info.left;
 
         if (this.vertical) {
-            pos.top = args.shift() || 0;
+            top = args.shift() || 0;
         }
 
         if (this.horizontal) {
-            pos.left = args.shift() || 0;
+            left = args.shift() || 0;
         }
 
-        // 控制滚动范围
-        pos.top = Math.min(0, Math.max(this.minY, pos.top * -1));
-        pos.left = Math.min(0, Math.max(this.minX, pos.left * -1));
-
-        // 获取缓动时间
-        pos.duration = args[0] || 0;
-
-        render(this, pos);
+        scrollTo(this, -1 * top, -1 * left, args[0] || 0);
     };
 
     /**
@@ -407,6 +473,9 @@ define(function (require) {
 
     /**
      * 获取垂直滚动位移
+     *
+     * @public
+     * @return {number}
      */
     Scroll.prototype.getScrollTop = function () {
         return -1 * this.info.top;
