@@ -9,7 +9,7 @@ define(function (require) {
     var curry = require('saber-lang/curry');
     var runner = require('saber-run');
 
-    var OPACITY = '0.4';
+    var OPACITY = '0.5';
 
     /**
      * 创建滚动条
@@ -33,14 +33,14 @@ define(function (require) {
 
         rate = Math.max(rate * 100, 5);
         if (type == 'horizontal') {
-            css += ';bottom:0'
+            css += ';bottom:1px'
                     + ';left:0'
                     + ';height:5px'
                     + ';width:' + rate + '%';
         }
         else {
             css += ';top:0'
-                    + ';right:0'
+                    + ';right:1px'
                     + ';width:5px'
                     + ';height:' + rate + '%';
         }
