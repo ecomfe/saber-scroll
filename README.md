@@ -28,8 +28,6 @@ __只滚动区域的第一个子元素__，如果想让区域中的所有元素�
 </div>
 ```
 
-
-
 ## API
 
 ### scroll(ele, options)
@@ -42,15 +40,30 @@ __只滚动区域的第一个子元素__，如果想让区域中的所有元素�
 
 滚动条是以插件形式实现的，在使用时除了设置`options.scrollbar`外，还需要引入`saber-scroll/plugin/scrollbar`模块
 
-#### Scroller
+### Scroller
 
 `scroll()`创建的滚动对象
 
-##### .on
+#### .on
 
 为滚动对象事件，目前支持以下事件
 
 * `change`：滚动事件，事件参数包含`top`、`left`属性，表示滚动的位移
+
+#### .scrollTo(args, duration)
+
+滚动到确定位置
+
+* `args` 滚动位置；变长参数，如果是双向滚动，则为`top`, `left`两参数
+* `duration` 缓动时间；单位为秒，默认为`0`
+
+#### .getScrollLeft()
+
+获取水平滚动位移
+
+#### .getScrollTop()
+
+获取垂直滚动位移
 
 ===
 

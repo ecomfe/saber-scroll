@@ -27,16 +27,31 @@ define(function (require) {
      * 设置位置
      *
      * @inner
-     * @param {Object} scroll
-     * @param {number} dt 动画时间
+     * @param {Scroll} scroll
+     * @param {Object} pos
+     * @param {number=} pos.top
+     * @param {number=} pos.left
+     * @param {number=} pos.duration
      * @return {Promise}
      */
-    function render(scroll, dt) {
-        var x = scroll.info.left;
-        var y = scroll.info.top;
-        dt = dt || 0;
+    function render(scroll, pos) {
+        var x = pos.left || 0;
+        var y = pos.top || 0;
+        var dt = pos.duration || 0;
 
-        scroll.emit(':render', extend({duration: dt}, scroll.info));
+        scroll.emit(
+            ':render', 
+            {
+                left: x,
+                top: y,
+                duration: dt
+            }
+        );
+
+        var info = scroll.info || {};
+        info.top = y;
+        info.left = x;
+        scroll.info = info;
 
         return runner.transition(
                 scroll.main,
@@ -71,10 +86,13 @@ define(function (require) {
     function resetScroll(scroll) {
         var info = scroll.info;
 
-        info.left = Math.max(Math.min(0, info.left), scroll.minX);
-        info.top = Math.max(Math.min(0, info.top), scroll.minY);
+        var pos = {
+                top: Math.max(Math.min(0, info.top), scroll.minY),
+                left: Math.max(Math.min(0, info.left), scroll.minX),
+                duration: 0.5
+            };
 
-        render(scroll, 0.5).then(function () {
+        render(scroll, pos).then(function () {
             info.status = STATUS.IDLE;
             scroll.emit(':end');
         });
@@ -126,9 +144,13 @@ define(function (require) {
             var dy = (speed.y + vy) * dt / 2;
             var dx = (speed.x + vx) * dt / 2;
 
-            info.top += dy;
-            info.left += dx;
-            render(scroll);
+            render(
+                scroll, 
+                {
+                    top: info.top + dy, 
+                    left: info.left + dx
+                }
+            );
 
             // 如果速度与加速度方向相同 
             // 表示已经完成减速
@@ -176,7 +198,7 @@ define(function (require) {
      * @inner
      */
     function scrollStartHandler(scroll, e) {
-        var info = scroll.info || {left: 0, top: 0};
+        var info = scroll.info;
 
         if (info.status) {
             return;
@@ -229,13 +251,18 @@ define(function (require) {
         info.dx = dx;
         info.dy = dy;
 
+        var pos = {
+                top: info.top,
+                left: info.left
+            };
+
         // 如果滚动超出范围
         // 减少滚动位移
-        info.left += info.left > 0 || info.left < scroll.minX ? dx / 3 : dx;
-        info.top += info.top > 0 || info.top < scroll.minY ? dy / 3 : dy;
+        pos.top += info.top > 0 || info.top < scroll.minY ? dy / 3 : dy;
+        pos.left += info.left > 0 || info.left < scroll.minX ? dx / 3 : dx;
 
-        render(scroll);
-        scroll.emit('scroll', {left: info.left, top: info.top});
+        render(scroll, pos);
+        scroll.emit('scroll', {left: -1 * pos.left, top: -1 * pos.top});
 
         var now = runner.now();
         info.dt = now - info.time;
@@ -247,7 +274,7 @@ define(function (require) {
      *
      * @inner
      */
-    function scrollEndHandler(scroll, e) {
+    function scrollEndHandler(scroll) {
         var info = scroll.info;
 
         if (!info || info.status !== STATUS.SCROLLING) {
@@ -275,6 +302,13 @@ define(function (require) {
 
         var ele = scroll.main;
         var wrapper = ele.parentNode;
+
+        // 滚动信息
+        scroll.info = {
+            top: 0, 
+            left: 0,
+            status: STATUS.IDLE
+        };
 
         scroll.minX = wrapper.clientWidth - wrapper.scrollWidth;
         scroll.minY = wrapper.clientHeight - wrapper.scrollHeight;
@@ -328,6 +362,55 @@ define(function (require) {
 
         initScroll(this);
     }
+
+    /**
+     * 滚动到确定位置
+     *
+     * @public
+     * @param {...number} 滚动位置
+     * @param {number=} duration 缓动时间
+     */
+    Scroll.prototype.scrollTo = function () {
+        var args = Array.prototype.slice.call(arguments);
+        var pos = {
+                top: this.info.top,
+                left: this.info.left
+            };
+
+        if (this.vertical) {
+            pos.top = args.shift() || 0;
+        }
+
+        if (this.horizontal) {
+            pos.left = args.shift() || 0;
+        }
+
+        // 控制滚动范围
+        pos.top = Math.min(0, Math.max(this.minY, pos.top * -1));
+        pos.left = Math.min(0, Math.max(this.minX, pos.left * -1));
+
+        // 获取缓动时间
+        pos.duration = args[0] || 0;
+
+        render(this, pos);
+    };
+
+    /**
+     * 获取水平滚动位移
+     *
+     * @public
+     * @return {number}
+     */
+    Scroll.prototype.getScrollLeft = function () {
+        return -1 * this.info.left;
+    };
+
+    /**
+     * 获取垂直滚动位移
+     */
+    Scroll.prototype.getScrollTop = function () {
+        return -1 * this.info.top;
+    };
 
     return Scroll;
 });
