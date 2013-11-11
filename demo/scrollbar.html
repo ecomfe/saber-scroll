@@ -39,7 +39,7 @@
     </script>
     <style>
         .outer {
-            position: absolute;
+            position: relative;
             border: 1px solid #CCC;
             height: 300px;
             width: 200px;
@@ -76,6 +76,12 @@
             <p>hello world</p>
         </div>
     </div>
+    <div class="outer" id="box2">
+        <div style="overflow:hidden;width:600px">
+            <p>This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. </p>
+            <p>This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. </p>
+        </div>
+    </div>
     <script>
         require(['saber-scroll', 'saber-scroll/plugin/scrollbar'], function (scroll) {
             var outer = scroll(
@@ -86,6 +92,15 @@
                 );
 
             outer.scrollTo(100);
+
+            var outer2 = scroll(
+                    'box2', 
+                    { 
+                        scrollbar: true,  
+                        // 强制垂直不滚动 
+                        vertical: false
+                    }
+                );
         });
     </script>
 </body>

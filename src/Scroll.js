@@ -384,7 +384,11 @@ define(function (require) {
      */
     var DEFAUTL_PROPERTYS = {
             // 是否显示滚动条
-            scrollbar: false 
+            scrollbar: false,
+            // 可垂直滚动
+            vertical: true,
+            // 可水平滚动
+            horizontal : true
         };
 
     /**

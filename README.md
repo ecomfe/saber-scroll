@@ -34,9 +34,11 @@ __只滚动区域的第一个子元素__，如果想让区域中的所有元素�
 
 使元素内容可滚动
 
-* `ele` 内容需要滚动的元素
+* `ele` 内容需要滚动的元素或者对应的id
 * `options` 初始化参数
 * `options.scrollbar` 是否显示滚动条，默认为`false`
+* `options.horizontal` 是否可以水平滚动，默认为`true`
+* `options.vertical` 是否可以垂直滚动，默认为`true`
 
 滚动条是以插件形式实现的，在使用时除了设置`options.scrollbar`外，还需要引入`saber-scroll/plugin/scrollbar`模块
 
