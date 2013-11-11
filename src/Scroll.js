@@ -307,8 +307,9 @@ define(function (require) {
      *
      * @inner
      * @param {Scroll} scroll
+     * @param {boolean=} clean 是否忽略滚动方向状态检查
      */
-    function calculate(scroll) {
+    function calculate(scroll, clean) {
         var wrapper = scroll.main.parentNode;
 
         scroll.minX = wrapper.clientWidth - wrapper.scrollWidth;
@@ -319,8 +320,10 @@ define(function (require) {
         scroll.clientHeight = wrapper.clientHeight;
         scroll.clientWidth = wrapper.clientWidth;
         
-        scroll.vertical = scroll.vertical !== false && scroll.minY < 0;
-        scroll.horizontal = scroll.horizontal !== false && scroll.minX < 0;
+        scroll.vertical = (clean === true || scroll.vertical !== false)
+                        && scroll.minY < 0;
+        scroll.horizontal = (clean === true || scroll.horizontal !== false)
+                        && scroll.minX < 0;
     }
 
     /**
@@ -420,7 +423,7 @@ define(function (require) {
      * @public
      */
     Scroll.prototype.repaint = function () {
-        calculate(this);
+        calculate(this, true);
         plugin.reset(this);
         scrollTo(this, this.info.top, this.info.left);
     };
