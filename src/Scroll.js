@@ -318,9 +318,18 @@ define(function (require) {
         scroll.scrollWidth = wrapper.scrollWidth;
         scroll.clientHeight = wrapper.clientHeight;
         scroll.clientWidth = wrapper.clientWidth;
-
-        scroll.vertical = scroll.vertical !== false && scroll.minY < 0;
-        scroll.horizontal = scroll.horizontal !== false && scroll.minX < 0;
+        
+        // 这里比较隐晦:
+        // `vertical` 和 `horizontal` 取值分3类:
+        // 1. 为`true`, 说明对应方向可滚动
+        // 2. 为`false`, 说明初始化配置参数设置了`false`,此方向永久性禁止滚动
+        // 3. 为`undefined`, 说明当前对应方向不可滚动
+        if (scroll.vertical !== false && scroll.minY < 0) {
+            scroll.vertical = true;
+        }
+        if (scroll.horizontal !== false && scroll.minX < 0) {
+            scroll.horizontal = true;
+        }
     }
 
     /**
