@@ -307,9 +307,8 @@ define(function (require) {
      *
      * @inner
      * @param {Scroll} scroll
-     * @param {boolean=} clean 是否忽略滚动方向状态检查
      */
-    function calculate(scroll, clean) {
+    function calculate(scroll) {
         var wrapper = scroll.main.parentNode;
 
         scroll.minX = wrapper.clientWidth - wrapper.scrollWidth;
@@ -320,10 +319,11 @@ define(function (require) {
         scroll.clientHeight = wrapper.clientHeight;
         scroll.clientWidth = wrapper.clientWidth;
         
-        scroll.vertical = (clean === true || scroll.vertical !== false)
-                        && scroll.minY < 0;
-        scroll.horizontal = (clean === true || scroll.horizontal !== false)
-                        && scroll.minX < 0;
+        scroll.vertical = scroll.initialOptions.vertical !== false 
+                            && scroll.minY < 0;
+
+        scroll.horizontal = scroll.initialOptions.horizontal !== false 
+                            && scroll.minX < 0;
     }
 
     /**
@@ -407,7 +407,10 @@ define(function (require) {
         }
 
         this.main = ele;
-        var propertys = extend({}, DEFAUTL_PROPERTYS, options);
+        // 保存初始化参数
+        // 用于后续的重新计算
+        var propertys = this.initialOptions 
+                        = extend({}, DEFAUTL_PROPERTYS, options);
         var me = this;
         Object.keys(propertys).forEach(function (key) {
             me[key] = propertys[key];
@@ -423,7 +426,7 @@ define(function (require) {
      * @public
      */
     Scroll.prototype.repaint = function () {
-        calculate(this, true);
+        calculate(this);
         plugin.reset(this);
         scrollTo(this, this.info.top, this.info.left);
     };
