@@ -55,13 +55,13 @@ define(function (require) {
         scroll.info = info;
 
         return runner.transition(
-                scroll.main,
-                { transform: 'translate3d(' + x + 'px, ' + y + 'px, 0)' },
-                {
-                    duration: dt,
-                    timing: 'ease-out'
-                }
-            );
+            scroll.main,
+            { transform: 'translate3d(' + x + 'px, ' + y + 'px, 0)' },
+            {
+                duration: dt,
+                timing: 'ease-out'
+            }
+        );
     }
 
     /**
@@ -353,8 +353,10 @@ define(function (require) {
         };
 
         Object.keys(events).forEach(function (eventName) {
-            util.addEvent(ele, eventName, events[eventName]);
+            util.addEvent(ele.parentNode, eventName, events[eventName]);
         });
+
+        dom.setStyle(ele, 'text-size-adjust', '100%');
 
         if (scroll.scrollbar) {
             plugin.enable(scroll, 'scrollbar');
