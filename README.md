@@ -56,15 +56,30 @@ __只滚动区域的第一个子元素__，如果想让区域中的所有元素�
 
 * `change`：滚动事件，事件参数包含`top`、`left`属性，表示滚动的位移
 
+#### .disable()
+
+禁用区域滚动
+
+#### .enable()
+
+启动区域滚动
+
 #### .repaint()
 
-重绘滚动，在滚动区域大小修改后使用，重新计算可滚动区域
+重绘滚动区域，在滚动区域大小修改后使用，重新计算可滚动区域
 
 #### .scrollTo(args, duration)
 
 滚动到确定位置
 
 * `args` 滚动位置；变长参数，如果是双向滚动，则为`top`, `left`两参数
+* `duration` 缓动时间；单位为秒，默认为`0`
+
+#### .scrollToElement(element, duration)
+
+滚动都内部某元素位置
+
+* `element` DOM元素
 * `duration` 缓动时间；单位为秒，默认为`0`
 
 #### .getScrollLeft()
