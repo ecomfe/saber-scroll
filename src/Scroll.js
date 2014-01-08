@@ -7,7 +7,6 @@ define(function (require) {
 
     var dom = require('saber-dom');
     var extend = require('saber-lang/extend');
-    var curry = require('saber-lang/curry');
     var Emitter = require('saber-emitter');
     var runner = require('saber-run');
     var util = require('./util');
@@ -97,6 +96,19 @@ define(function (require) {
             info.status = STATUS.IDLE;
             scroll.emit(':end');
         });
+    }
+
+    /**
+     * 停止缓动动画
+     *
+     * @inner
+     */
+    function stopAnimate(scroll) {
+        var info = scroll.info;
+        if (info.frame) {
+            runner.cancelAnimationFrame(info.frame);
+            info.frame = null;
+        }
     }
 
     /**
@@ -207,10 +219,7 @@ define(function (require) {
 
         // 如果有动画
         // 先取消
-        if (info.frame) {
-            runner.cancelAnimationFrame(info.frame);
-            info.frame = null;
-        }
+        stopAnimate(scroll);
 
         var touch = e.touches ? e.touches[0] : e;
         info.pointX = touch.clientX || touch.pageX;
@@ -343,13 +352,25 @@ define(function (require) {
             status: STATUS.IDLE
         };
 
+        scroll.disabled = false;
+
         calculate(scroll);
 
+        function wrapHandler(handler, scroll) {
+            return function (e) {
+                if (scroll.disabled) {
+                    return;
+                }
+
+                handler(scroll, e);
+            };
+        }
+
         var events = scroll.eventHanlder = {
-            touchstart: curry(scrollStartHandler, scroll),
-            touchmove: curry(scrollMoveHandler, scroll),
-            touchcanel: curry(scrollEndHandler, scroll),
-            touchend: curry(scrollEndHandler, scroll)
+            touchstart: wrapHandler(scrollStartHandler, scroll),
+            touchmove: wrapHandler(scrollMoveHandler, scroll),
+            touchcanel: wrapHandler(scrollEndHandler, scroll),
+            touchend: wrapHandler(scrollEndHandler, scroll)
         };
 
         Object.keys(events).forEach(function (eventName) {
@@ -428,6 +449,10 @@ define(function (require) {
      * @public
      */
     Scroll.prototype.repaint = function () {
+        if (this.disabled) {
+            return;
+        }
+
         calculate(this);
         plugin.reset(this);
         scrollTo(this, this.info.top, this.info.left);
@@ -458,6 +483,10 @@ define(function (require) {
      * @param {number=} duration 缓动时间
      */
     Scroll.prototype.scrollTo = function () {
+        if (this.disabled) {
+            return;
+        }
+
         var args = Array.prototype.slice.call(arguments);
         var top = this.info.top;
         var left = this.info.left;
@@ -481,6 +510,10 @@ define(function (require) {
      * @param {number} time 缓动时间
      */
     Scroll.prototype.scrollToElement = function (ele, time) {
+        if (this.disabled) {
+            return;
+        }
+
         var pos = dom.position(ele, this.main);
 
         scrollTo(this, -1 * pos.top, -1 * pos.left, time);
@@ -504,6 +537,32 @@ define(function (require) {
      */
     Scroll.prototype.getScrollTop = function () {
         return -1 * this.info.top;
+    };
+
+    /**
+     * 禁止滚动区域滚动
+     *
+     * @public
+     */
+    Scroll.prototype.disable = function () {
+        if (this.disabled) {
+            return;
+        }
+
+        this.disabled = true;
+        if (this.info.status == STATUS.SCROLLING) {
+            scrollEndHandler(this);
+            stopAnimate(this);
+        }
+    };
+
+    /**
+     * 启动滚动区域滚动
+     *
+     * @public
+     */
+    Scroll.prototype.enable = function () {
+        this.disabled = false;
     };
 
     return Scroll;
