@@ -18,7 +18,7 @@
                 },
                 {
                     name: 'saber-dom',
-                    location: './dep/saber-dom/0.3.0/src'
+                    location: './dep/saber-dom/0.3.1/src'
                 },
                 {
                     name: 'saber-emitter',
@@ -76,9 +76,9 @@
     </style>
 </head>
 <body>
+    <p><a href="#" id="btn">scroll to bottom</a></p>
     <div class="box outer-a">
         <div style="overflow:hidden">
-            <p>hello world</p>
             <p>hello world</p>
             <p>hello world</p>
             <p>hello world</p>
@@ -130,6 +130,7 @@
             <p>hello world</p>
             <p>hello world</p>
             <p>hello world</p>
+            <p id="last">last child</p>
         </div>
     </div>
     <div class="box-h" id="outerH">
@@ -147,6 +148,10 @@
             });
 
             var outerH = scroll(document.getElementById('outerH'));
+
+            document.getElementById('btn').onclick = function () {
+                outer.scrollToElement(document.getElementById('first'), 0.3);
+            };
         });
     </script>
 </body>

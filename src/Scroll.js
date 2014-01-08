@@ -474,6 +474,19 @@ define(function (require) {
     };
 
     /**
+     * 滚动到元素位置
+     *
+     * @public
+     * @param {HTMLElement} ele DOM元素
+     * @param {number} time 缓动时间
+     */
+    Scroll.prototype.scrollToElement = function (ele, time) {
+        var pos = dom.position(ele, this.main);
+
+        scrollTo(this, -1 * pos.top, -1 * pos.left, time);
+    };
+
+    /**
      * 获取水平滚动位移
      *
      * @public
