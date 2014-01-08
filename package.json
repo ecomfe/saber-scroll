@@ -1,6 +1,6 @@
 {
     "name": "saber-scroll",
-    "version": "0.1.1-beta.1",
+    "version": "0.1.1-beta.2",
     "description": "为移动端页面开发提供区域滚动功能",
     "main": "main",
     "maintainers": [
@@ -11,7 +11,7 @@
     ],
     "dependencies": {
         "saber-lang": "~0.2.0",
-        "saber-dom": "~0.3.0",
+        "saber-dom": "~0.3.1",
         "saber-emitter": "~0.3.0",
         "saber-run": "~0.1.0"
     },
