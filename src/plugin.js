@@ -7,7 +7,7 @@ define(function () {
     
     var exports = {};
 
-    var plugins = {};
+    var pluginFactories = {};
 
     /**
      * 启用插件
@@ -17,14 +17,21 @@ define(function () {
      * @param {string} name
      * @param {Object=} options
      */
-    exports.enable = function (scroll, name, options) {
-        var plugin = plugins[name];
+    exports.enable = function (scroll, options) {
+        var plugin;
+        var pluginFactory;
         var enablePlugins = scroll.plugins || {};
-        
-        if (plugin && !enablePlugins[name]) {
-            enablePlugins[name] = plugin(scroll, options);
-            scroll.plugins = enablePlugins;
-        }
+
+        Object.keys(pluginFactories).forEach(function (name) {
+            pluginFactory = pluginFactories[name];
+            if (!enablePlugins[name]
+                && (plugin = pluginFactory(scroll, options))
+            ) {
+                enablePlugins[name] = plugin;
+            }
+        });
+
+        scroll.plugins = enablePlugins;
     };
 
     /**
@@ -44,9 +51,13 @@ define(function () {
             names = Object.keys(scroll.plugins || {});
         }
 
+        var plugin;
         names.forEach(function (item) {
-            if (scroll.plugins[item]) {
-                scroll.plugins[item].destroy && scroll.plugins[item].destroy();
+            plugin = scroll.pluings[item];
+            if (plugin) {
+                if (plugin.destroy) {
+                    plugin.destroy();
+                }
                 delete scroll.plugins[item];
             }
         });
@@ -62,7 +73,9 @@ define(function () {
         var enablePlugins = scroll.plugins || {};
 
         Object.keys(enablePlugins).forEach(function (name) {
-            enablePlugins[name].reset && enablePlugins[name].reset();
+            if (enablePlugins[name].reset) {
+                enablePlugins[name].reset();
+            }
         });
     };
 
@@ -71,10 +84,10 @@ define(function () {
      *
      * @public
      * @param {string} name
-     * @param {Function} plugin
+     * @param {Function} pluginFactory
      */
-    exports.register = function (name, plugin) {
-       plugins[name] = plugin; 
+    exports.register = function (name, pluginFactory) {
+       pluginFactories[name] = pluginFactory; 
     };
 
     return exports;

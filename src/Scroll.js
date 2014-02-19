@@ -378,10 +378,6 @@ define(function (require) {
         });
 
         dom.setStyle(ele, 'text-size-adjust', '100%');
-
-        if (scroll.scrollbar) {
-            plugin.enable(scroll, 'scrollbar');
-        }
     }
 
     /**
@@ -440,6 +436,9 @@ define(function (require) {
         });
 
         initScroll(this);
+
+        // 初始化插件
+        plugin.enable(this, options);
     }
 
     /**

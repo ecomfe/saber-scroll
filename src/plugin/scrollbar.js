@@ -317,8 +317,13 @@ define(function (require) {
     require('../plugin').register(
         'scrollbar', 
         function (scroll, options) {
-            return new Scrollbar(scroll, options);
+            var res = false;
+
+            if (options.scrollbar) {
+                res = new Scrollbar(scroll, options);
+            }
+
+            return res;
         }
     );
-
 });
