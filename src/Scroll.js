@@ -302,7 +302,7 @@ define(function (require) {
         // 如果滚动超出范围
         // 减少滚动位移
         pos.top += isOutDir(scroll, info.top, 'y') ? dy / 3 : dy;
-        pos.left += isOutDir(sroll, info.left, 'x') ? dx / 3 : dx;
+        pos.left += isOutDir(scroll, info.left, 'x') ? dx / 3 : dx;
 
         // 进行超出滚动判断
         if (!scroll.overflow && isScrollOut(scroll, pos)) {
