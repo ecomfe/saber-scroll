@@ -187,7 +187,7 @@ define(function (require) {
                 };
 
             // 如果不允许滚动超出范围则进行修正
-            if (!scroll.overflow && isScrollOut(scroll, scrollToPos)) {
+            if (!scroll.overflow) {
                 if (isOutDir(scroll, scrollToPos.left, 'x')) {
                     speed.x = 0;
                 }
@@ -291,21 +291,18 @@ define(function (require) {
 
         info.pointX += dx;
         info.pointY += dy;
-        info.dx = dx;
-        info.dy = dy;
-
-        var pos = {
-                top: info.top,
-                left: info.left
-            };
-
         // 如果滚动超出范围
         // 减少滚动位移
-        pos.top += isOutDir(scroll, info.top, 'y') ? dy / 3 : dy;
-        pos.left += isOutDir(scroll, info.left, 'x') ? dx / 3 : dx;
+        info.dx = isOutDir(scroll, info.left, 'x') ? dx / 3 : dx;
+        info.dy = isOutDir(scroll, info.top, 'y') ? dy / 3 : dy;
+
+        var pos = {
+                top: info.top + info.dy,
+                left: info.left + info.dx
+            };
 
         // 进行超出滚动判断
-        if (!scroll.overflow && isScrollOut(scroll, pos)) {
+        if (!scroll.overflow) {
             pos = normalizePos(scroll, pos);
         }
 
