@@ -64,17 +64,38 @@ define(function (require) {
     }
 
     /**
+     * 判断某一方向上是否超出可滚动区域
+     *
+     * @inner
+     */
+    function isOutDir(scroll, value, dir) {
+        var min = scroll['min' + (dir == 'x' ? 'X' : 'Y')];
+
+        return value > 0 || value < min;
+    }
+
+    /**
      * 判读是否超出滚动范围
      *
      * @inner
      */
-    function isScrollOut(scroll) {
-        var info  = scroll.info;
+    function isScrollOut(scroll, pos) {
+        var info  = pos || scroll.info;
 
-        return info.left > 0 
-            || info.top > 0
-            || info.left < scroll.minX 
-            || info.top < scroll.minY;
+        return isOutDir(scroll, info.left, 'x')
+            || isOutDir(scroll, info.top, 'y');
+    }
+
+    /**
+     * 使目标位置在滚动条可滚动区域内
+     *
+     * @inner
+     */
+    function normalizePos(scroll, pos) {
+        return {
+            top: Math.max(Math.min(0, pos.top), scroll.minY),
+            left: Math.max(Math.min(0, pos.left), scroll.minX),
+        };
     }
 
     /**
@@ -86,11 +107,8 @@ define(function (require) {
     function resetScroll(scroll) {
         var info = scroll.info;
 
-        var pos = {
-                top: Math.max(Math.min(0, info.top), scroll.minY),
-                left: Math.max(Math.min(0, info.left), scroll.minX),
-                duration: 0.5
-            };
+        var pos = normalizePos(scroll, info);
+        pos.duration = 0.5;
 
         render(scroll, pos).then(function () {
             info.status = STATUS.IDLE;
@@ -157,31 +175,37 @@ define(function (require) {
             var dy = (speed.y + vy) * dt / 2;
             var dx = (speed.x + vx) * dt / 2;
 
-            render(
-                scroll, 
-                {
-                    top: info.top + dy, 
-                    left: info.left + dx
-                }
-            );
-
             // 如果速度与加速度方向相同 
             // 表示已经完成减速
             speed.x = vx * acce.x < 0 ? vx : 0;
             speed.y = vy * acce.y < 0 ? vy : 0;
             time = now;
 
+            var scrollToPos = {
+                    top: info.top + dy,
+                    left: info.left + dx
+                };
+
+            // 如果不允许滚动超出范围则进行修正
+            if (!scroll.overflow && isScrollOut(scroll, scrollToPos)) {
+                if (isOutDir(scroll, scrollToPos.left, 'x')) {
+                    speed.x = 0;
+                }
+                if (isOutDir(scroll, scrollToPos.top, 'y')) {
+                    speed.y = 0;
+                }
+                scrollToPos = normalizePos(scroll, scrollToPos);
+            }
+
+            render(scroll, scrollToPos);
+
             // 如果未完成减速时已超出滚动
             // 成倍增加加速度
-            if (speed.x 
-                && (info.left > 0 || info.left < scroll.minX)
-            ) {
+            if (speed.x && isOutDir(scroll, info.left, 'x')) {
                 acce.x *= 5;
             }
             
-            if (speed.y
-                && (info.top > 0 || info.top < scroll.minY)
-            ) {
+            if (speed.y && isOutDir(scroll, info.top, 'y')) {
                 acce.y *= 5;
             }
             
@@ -277,8 +301,13 @@ define(function (require) {
 
         // 如果滚动超出范围
         // 减少滚动位移
-        pos.top += info.top > 0 || info.top < scroll.minY ? dy / 3 : dy;
-        pos.left += info.left > 0 || info.left < scroll.minX ? dx / 3 : dx;
+        pos.top += isOutDir(scroll, info.top, 'y') ? dy / 3 : dy;
+        pos.left += isOutDir(sroll, info.left, 'x') ? dx / 3 : dx;
+
+        // 进行超出滚动判断
+        if (!scroll.overflow && isScrollOut(scroll, pos)) {
+            pos = normalizePos(scroll, pos);
+        }
 
         render(scroll, pos);
         scroll.emit('scroll', {left: -1 * pos.left, top: -1 * pos.top});
@@ -301,6 +330,7 @@ define(function (require) {
             return;
         }
 
+        // 是否还在滚动中
         if (!info.dt) {
             info.status = STATUS.IDLE;
         } else if (isScrollOut(scroll)) {
@@ -386,15 +416,8 @@ define(function (require) {
      * @inner
      */
     function scrollTo(scroll, top, left, duration) {
-        var pos = {
-                top: top,
-                left: left,
-                duration: duration || 0
-            };
-        
-        // 修正滚动范围
-        pos.top = Math.min(0, Math.max(scroll.minY, pos.top));
-        pos.left = Math.min(0, Math.max(scroll.minX, pos.left));
+        var pos = normalizePos(scroll, {top: top, left: left});
+        pos.duration = duration || 0;
 
         render(scroll, pos);
     }
@@ -410,7 +433,9 @@ define(function (require) {
             // 可垂直滚动
             vertical: true,
             // 可水平滚动
-            horizontal : true
+            horizontal : true,
+            // 可超出可滚动区域
+            overflow: true
         };
 
     /**
