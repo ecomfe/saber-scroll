@@ -140,7 +140,7 @@
     </div>
     <script>
         require(['saber-scroll'], function (scroll) {
-            var outer = scroll(document.getElementById('outer'));
+            var outer = scroll(document.getElementById('outer'), {overflow: false});
 
             outer.on('scroll', function (e) {
                 console.log(e.top);
