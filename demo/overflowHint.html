@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Scroll - Scrollbar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <script src="http://s1.bdstatic.com/r/www/cache/ecom/esl/1-6-6/esl.js"></script>
+    <script>
+        require.config({
+            packages: [
+                {
+                    name: 'saber-scroll',
+                    location: '../src'
+                },
+                {
+                    name: 'saber-lang',
+                    location: './dep/saber-lang/0.2.0/src'
+                },
+                {
+                    name: 'saber-dom',
+                    location: './dep/saber-dom/0.3.0/src'
+                },
+                {
+                    name: 'saber-emitter',
+                    main: 'emitter',
+                    location: './dep/saber-emitter/0.3.0/src'
+                },
+                {
+                    name: 'saber-run',
+                    location: './dep/saber-run/0.1.0/src'
+                },
+                {
+                    name: 'saber-promise',
+                    main: 'promise',
+                    location: './dep/saber-promise/0.1.1/src'
+                }
+            ]
+        });
+    </script>
+    <style>
+        .outer {
+            position: relative;
+            border: 1px solid #CCC;
+            height: 300px;
+            width: 200px;
+            overflow: hidden;
+        }
+
+        .scroll-out-hint {
+            display: none;
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: #333;
+            opacity: 0.5;
+        }
+
+        .scroll-overflow-top .scroll-out-hint {
+            display: block;
+            bottom: 0;
+        }
+
+        .scroll-overflow-bottom .scroll-out-hint {
+            display: block;
+            top: 0;
+        }
+
+        .x-hint {
+            position: absolute;
+            top: 0;
+            width: 5px;
+            height: 100%;
+            background: #333;
+            opacity: 0.5;
+        }
+
+        .x-hint-left {
+            left: 0;
+        }
+
+        .x-hint-right {
+            right: 0;
+        }
+
+        .x-scroll-out-left .x-hint-right {
+            display: none;
+        }
+
+        .x-scroll-out-right .x-hint-left {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer" id="box">
+        <div style="overflow:hidden">
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+            <p>hello world</p>
+        </div>
+        <div class="scroll-out-hint"></div>
+    </div>
+    <div class="outer" id="box2">
+        <div style="overflow:hidden;width:600px">
+            <p>This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. </p>
+            <p>This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. This section is very very very long. </p>
+        </div>
+        <div class="x-hint x-hint-left"></div>
+        <div class="x-hint x-hint-right"></div>
+    </div>
+    <script>
+        require(
+            [
+                'saber-scroll', 
+                'saber-scroll/plugin/scrollbar', 
+                'saber-scroll/plugin/overflowHint'
+            ], 
+            function (scroll) {
+                var outer = scroll(
+                        document.getElementById('box'),
+                        {
+                            scrollbar: true,
+                            overflow: false,
+                            // 设置滚动超出提示
+                            overflowHint: true
+                        }
+                    );
+
+                outer.scrollTo(100);
+
+                var outer2 = scroll(
+                        'box2', 
+                        { 
+                            scrollbar: true,  
+                            // 强制垂直不滚动 
+                            vertical: false,
+                            // 设置滚动超出提示
+                            overflowHint: {
+                                // 自定义样式前缀
+                                className: 'x-scroll-out'
+                            }
+                        }
+                    );
+            }
+        );
+    </script>
+</body>
+</html>
