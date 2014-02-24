@@ -36,9 +36,9 @@ __只滚动区域的第一个子元素__，如果想让区域中的所有元素�
 
 * `ele` 内容需要滚动的元素或者对应的id
 * `options` 初始化参数
-* `options.scrollbar` 是否显示滚动条，默认为`false`
 * `options.horizontal` 是否可以水平滚动，默认为`true`
 * `options.vertical` 是否可以垂直滚动，默认为`true`
+* `options.overflow` 是否可以超出滚动范围，默认为`true`
 
 滚动条是以插件形式实现的，在使用时除了设置`options.scrollbar`外，还需要引入`saber-scroll/plugin/scrollbar`模块
 
@@ -89,6 +89,29 @@ __只滚动区域的第一个子元素__，如果想让区域中的所有元素�
 #### .getScrollTop()
 
 获取垂直滚动位移
+
+## Plugins
+
+插件需要额外引入并设置相应的属性，例如：
+
+```javascript
+var scroll = require('saber-scroll');
+// 引入scrollbar插件
+require('saber-scroll/plugin/scrollbar');
+
+var scroller = scroll(
+        ele,
+        {
+            // 启用scrollbar插件
+            scrollbar: true
+        }
+    );
+```
+
+目前支持以下插件：
+
+* [scrollbar](doc/plugin/scrollbar.md) 为滚动区域添加滚动条
+* [overflowHint](doc/plugin/overflowHint.md) 提供到达或者超出滚动范围的提示样式
 
 ===
 
