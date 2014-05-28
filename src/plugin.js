@@ -53,7 +53,7 @@ define(function () {
 
         var plugin;
         names.forEach(function (item) {
-            plugin = scroll.pluings[item];
+            plugin = scroll.plugins[item];
             if (plugin) {
                 if (plugin.destroy) {
                     plugin.destroy();
