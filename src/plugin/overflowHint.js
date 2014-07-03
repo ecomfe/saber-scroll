@@ -52,7 +52,7 @@ define(function (require) {
         var container = scroll.main.parentNode;
         var className = container.className;
 
-        className = className.replace(this.clsNameReg, '');
+        className = className.replace(this.clsNameReg, '').trim();
 
         var x = e.left;
         className = addClassName(

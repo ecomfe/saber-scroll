@@ -12,10 +12,11 @@ define(function (require) {
      *
      * @public
      * @param {HTMLElement|string} ele 需要滚动内容的元素或对应的id
-     * @param {Object} options 配置项
+     * @param {Object=} options 配置项
      * @return {Scroll}
      */
     return function (ele, options) {
+        options = options || {};
         if (Object.prototype.toString.call(ele) === '[object String]') {
             ele = document.getElementById(ele);
         }
