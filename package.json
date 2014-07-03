@@ -10,8 +10,8 @@
         { "name": "zfkun", "email": "zfkun@msn.com" }
     ],
     "dependencies": {
-        "saber-lang": "~0.3.1",
-        "saber-dom": "~0.4.0",
+        "saber-lang": "~0.4.0",
+        "saber-dom": "~0.4.1",
         "saber-emitter": "~0.5.0",
         "saber-run": "~0.2.0"
     },
