@@ -230,6 +230,18 @@ define(function (require) {
     }
 
     /**
+     * 终止事件传播
+     * 阻止默认行为
+     *
+     * @inner
+     * @param {Event} e
+     */
+    function stopEvent(e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    /**
      * touchstart事件处理
      *
      * @inner
@@ -276,6 +288,9 @@ define(function (require) {
                     ? (touch.clientY || touch.pageY) - info.pointY
                     : 0;
 
+        // 阻止页面的滚动
+        stopEvent(e);
+
         // 忽略过短的移动
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
             return;
@@ -286,8 +301,6 @@ define(function (require) {
             info.status = STATUS.SCROLLING;
             scroll.emit(':start');
         }
-
-        e.preventDefault();
 
         info.pointX += dx;
         info.pointY += dy;
@@ -319,13 +332,17 @@ define(function (require) {
      *
      * @inner
      */
-    function scrollEndHandler(scroll) {
+    function scrollEndHandler(scroll, e) {
         var info = scroll.info;
 
         if (info.status !== STATUS.SCROLLING) {
             info.status = STATUS.IDLE;
             return;
         }
+
+        // 阻止滚动紧接着的touchend、touchcancel的传播
+        // 防止由于之前阻止了touchmove导致`fastclick`等的误判
+        stopEvent(e);
 
         // 是否还在滚动中
         if (!info.dt) {
