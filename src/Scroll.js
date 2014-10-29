@@ -18,10 +18,10 @@ define(function (require) {
      * @type {Object}
      */
     var STATUS = {
-            IDLE: 0, // 空闲状态
-            PREPARE: 1, // 准备状态
-            SCROLLING: 2, // 滚动中
-        };
+        IDLE: 0, // 空闲状态
+        PREPARE: 1, // 准备状态
+        SCROLLING: 2 // 滚动中
+    };
 
     /**
      * 设置位置
@@ -40,7 +40,7 @@ define(function (require) {
         var dt = pos.duration || 0;
 
         scroll.emit(
-            ':render', 
+            ':render',
             {
                 left: x,
                 top: y,
@@ -55,7 +55,7 @@ define(function (require) {
 
         return runner.transition(
             scroll.main,
-            { transform: 'translate3d(' + x + 'px, ' + y + 'px, 0)' },
+            {transform: 'translate3d(' + x + 'px, ' + y + 'px, 0)'},
             {
                 duration: dt,
                 timing: 'ease-out'
@@ -69,7 +69,7 @@ define(function (require) {
      * @inner
      */
     function isOutDir(scroll, value, dir) {
-        var min = scroll['min' + (dir == 'x' ? 'X' : 'Y')];
+        var min = scroll['min' + (dir === 'x' ? 'X' : 'Y')];
 
         return value > 0 || value < min;
     }
@@ -94,7 +94,7 @@ define(function (require) {
     function normalizePos(scroll, pos) {
         return {
             top: Math.max(Math.min(0, pos.top), scroll.minY),
-            left: Math.max(Math.min(0, pos.left), scroll.minX),
+            left: Math.max(Math.min(0, pos.left), scroll.minX)
         };
     }
 
@@ -175,7 +175,7 @@ define(function (require) {
             var dy = (speed.y + vy) * dt / 2;
             var dx = (speed.x + vx) * dt / 2;
 
-            // 如果速度与加速度方向相同 
+            // 如果速度与加速度方向相同
             // 表示已经完成减速
             speed.x = vx * acce.x < 0 ? vx : 0;
             speed.y = vy * acce.y < 0 ? vy : 0;
@@ -204,11 +204,11 @@ define(function (require) {
             if (speed.x && isOutDir(scroll, info.left, 'x')) {
                 acce.x *= 5;
             }
-            
+
             if (speed.y && isOutDir(scroll, info.top, 'y')) {
                 acce.y *= 5;
             }
-            
+
             // 任意方向还存在速度
             // 则继续缓动
             if (speed.x + speed.y) {
@@ -249,7 +249,7 @@ define(function (require) {
     function scrollStartHandler(scroll, e) {
         var info = scroll.info;
 
-        if (info.status == STATUS.SCROLLING) {
+        if (info.status === STATUS.SCROLLING) {
             return;
         }
 
@@ -281,10 +281,10 @@ define(function (require) {
         }
 
         var touch = e.touches ? e.touches[0] : e;
-        var dx = scroll.horizontal 
-                    ? (touch.clientX || touch.pageX) - info.pointX 
+        var dx = scroll.horizontal
+                    ? (touch.clientX || touch.pageX) - info.pointX
                     : 0;
-        var dy = scroll.vertical 
+        var dy = scroll.vertical
                     ? (touch.clientY || touch.pageY) - info.pointY
                     : 0;
 
@@ -296,7 +296,7 @@ define(function (require) {
             return;
         }
 
-        if (info.status == STATUS.PREPARE) {
+        if (info.status === STATUS.PREPARE) {
             // 进入滚动状态
             info.status = STATUS.SCROLLING;
             scroll.emit(':start');
@@ -347,14 +347,15 @@ define(function (require) {
         // 是否还在滚动中
         if (!info.dt) {
             info.status = STATUS.IDLE;
-        } else if (isScrollOut(scroll)) {
+        }
+        else if (isScrollOut(scroll)) {
             resetScroll(scroll);
         }
         else {
             finishScroll(scroll);
         }
     }
-    
+
     /**
      * 计算可滚动范围
      *
@@ -371,11 +372,11 @@ define(function (require) {
         scroll.scrollWidth = wrapper.scrollWidth;
         scroll.clientHeight = wrapper.clientHeight;
         scroll.clientWidth = wrapper.clientWidth;
-        
-        scroll.vertical = scroll.initialOptions.vertical !== false 
+
+        scroll.vertical = scroll.initialOptions.vertical !== false
                             && scroll.minY < 0;
 
-        scroll.horizontal = scroll.initialOptions.horizontal !== false 
+        scroll.horizontal = scroll.initialOptions.horizontal !== false
                             && scroll.minX < 0;
     }
 
@@ -391,7 +392,7 @@ define(function (require) {
 
         // 滚动信息
         scroll.info = {
-            top: 0, 
+            top: 0,
             left: 0,
             status: STATUS.IDLE
         };
@@ -447,7 +448,7 @@ define(function (require) {
             // 可垂直滚动
             vertical: true,
             // 可水平滚动
-            horizontal : true,
+            horizontal: true,
             // 可超出可滚动区域
             overflow: true
         };
@@ -467,8 +468,7 @@ define(function (require) {
         this.main = ele;
         // 保存初始化参数
         // 用于后续的重新计算
-        var propertys = this.initialOptions 
-                        = extend({}, DEFAUTL_PROPERTYS, options);
+        var propertys = this.initialOptions = extend({}, DEFAUTL_PROPERTYS, options);
         var me = this;
         Object.keys(propertys).forEach(function (key) {
             me[key] = propertys[key];
@@ -517,7 +517,8 @@ define(function (require) {
      * 滚动到确定位置
      *
      * @public
-     * @param {...number} 滚动位置
+     * @param {?number} top 垂直滚动位置
+     * @param {number=} left 水平滚动位置
      * @param {number=} duration 缓动时间
      */
     Scroll.prototype.scrollTo = function () {
@@ -588,7 +589,7 @@ define(function (require) {
         }
 
         this.disabled = true;
-        if (this.info.status == STATUS.SCROLLING) {
+        if (this.info.status === STATUS.SCROLLING) {
             scrollEndHandler(this);
             stopAnimate(this);
         }

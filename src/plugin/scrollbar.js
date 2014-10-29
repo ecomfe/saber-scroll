@@ -32,7 +32,7 @@ define(function (require) {
                 + ';border-radius: 3px';
 
         rate = Math.max(rate * 100, 5);
-        if (type == 'horizontal') {
+        if (type === 'horizontal') {
             css += ';bottom:1px'
                     + ';left:0'
                     + ';height:5px'
@@ -115,8 +115,8 @@ define(function (require) {
     function hideBar(ele) {
         runner.transition(
             ele,
-            { opacity: '0' },
-            { duration: 0.3 }
+            {opacity: '0'},
+            {duration: 0.3}
         );
     }
 
@@ -202,7 +202,7 @@ define(function (require) {
             if (!item) {
                 return;
             }
-            
+
             if (timer = timers[index]) {
                 clearTimeout(timer);
             }
@@ -243,7 +243,7 @@ define(function (require) {
      * 根据滚动信息渲染滚动条
      *
      * @public
-     * @param {Object}
+     * @param {Object} info
      */
     Scrollbar.prototype.render = function (info) {
         var ele;
@@ -254,7 +254,7 @@ define(function (require) {
         // 渲染垂直滚动条
         if (ele = this.verticalBar) {
             styles = {
-                transform: 'translate3d(0, '+ data.top + 'px, 0)',
+                transform: 'translate3d(0, ' + data.top + 'px, 0)',
                 height: data.height
             };
 
@@ -315,7 +315,7 @@ define(function (require) {
 
     // 注册插件
     require('../plugin').register(
-        'scrollbar', 
+        'scrollbar',
         function (scroll, options) {
             var res = false;
 

@@ -7,7 +7,7 @@ define(function (require) {
 
     var exports = {};
 
-    // TODO 
+    // TODO
     // win Phone支持
 
     /**

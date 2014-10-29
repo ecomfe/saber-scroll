@@ -58,21 +58,21 @@ define(function (require) {
         className = addClassName(
             className,
             this.clsNamePrefix,
-            x >= 0 
-                ? 'right' 
+            x >= 0
+                ? 'right'
                 : x <= scroll.minX
-                    ? 'left' 
+                    ? 'left'
                     : ''
         );
 
         var y = e.top;
         className = addClassName(
-            className, 
+            className,
             this.clsNamePrefix,
-            y >= 0 
-                ? 'bottom' 
+            y >= 0
+                ? 'bottom'
                 : y <= scroll.minY
-                    ? 'top' 
+                    ? 'top'
                     : ''
         );
 
@@ -87,7 +87,7 @@ define(function (require) {
     OverflowHint.prototype.destroy = function () {
         var scroll = this.scroll;
         var handlers = this.eventHandlers;
-        
+
         Object.keys(handlers).forEach(function (name) {
             scroll.off(':' + name, handlers[name]);
         });
@@ -97,7 +97,7 @@ define(function (require) {
 
     // 注册插件
     require('../plugin').register(
-        'overflowHint', 
+        'overflowHint',
         function (scroll, options) {
             var res = false;
 

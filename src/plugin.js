@@ -4,7 +4,7 @@
  */
 
 define(function () {
-    
+
     var exports = {};
 
     var pluginFactories = {};
@@ -14,7 +14,6 @@ define(function () {
      *
      * @public
      * @param {Scroll} scroll
-     * @param {string} name
      * @param {Object=} options
      */
     exports.enable = function (scroll, options) {
@@ -67,7 +66,7 @@ define(function () {
      * 重置所有插件
      *
      * @public
-     * @param {Scroll}
+     * @param {Scroll} scroll
      */
     exports.reset = function (scroll) {
         var enablePlugins = scroll.plugins || {};
@@ -87,7 +86,7 @@ define(function () {
      * @param {Function} pluginFactory
      */
     exports.register = function (name, pluginFactory) {
-       pluginFactories[name] = pluginFactory; 
+        pluginFactories[name] = pluginFactory;
     };
 
     return exports;
