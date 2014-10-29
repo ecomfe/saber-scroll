@@ -5,7 +5,7 @@ overflowHint
 
 添加`overflowHint`属性，非空表示启用提示，也可以是`Object`，进行详细设置：
 
-* `className` 提示样式名前缀，默认为`scroll-overflow`，向上滚动超出范围时会添加`scroll-overflow-top`样式，相应的还有`scroll-overflow-left`，`scroll-overflow-right`，`scroll-overflow-bottom`
+* **className** `{string}` 提示样式名前缀，默认为`scroll-overflow`，向上滚动超出范围时会添加`scroll-overflow-top`样式，相应的还有`scroll-overflow-left`，`scroll-overflow-right`，`scroll-overflow-bottom`
 
 ## Usage
 
