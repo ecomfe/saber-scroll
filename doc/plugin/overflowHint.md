@@ -1,4 +1,5 @@
-# overflowHint
+overflowHint
+===
 
 滚动范围提示，在滚动达到或者超出范围时给主元素添加额外的样式，用于视觉上的提示
 
@@ -8,19 +9,19 @@
 
 ## Usage
 
-```javascript
+```js
 var scroll = require('saber-scroll');
 // 引入overflowHint插件
 require('saber-scroll/plugin/overflowHint');
 
 var scroller = scroll(
-        ele,
-        {
-            // 启用overflowHint插件
-            overflowHint: {
-                // 自定义样式前缀
-                clasName: 'x-overflow'
-            }
+    ele,
+    {
+        // 启用overflowHint插件
+        overflowHint: {
+            // 自定义样式前缀
+            clasName: 'x-overflow'
         }
-    );
+    }
+);
 ```
