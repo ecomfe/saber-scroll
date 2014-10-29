@@ -143,11 +143,14 @@
             var outer = scroll(document.getElementById('outer'), {overflow: false});
 
             outer.on('scroll', function (e) {
-                console.log(e.top);
-                console.log(e.left);
+                console.log(e.top, e.left);
             });
 
             var outerH = scroll(document.getElementById('outerH'));
+
+            outerH.on('scroll', function (e) {
+                console.log(e.top, e.left);
+            });
 
             document.getElementById('btn').onclick = function () {
                 outer.scrollToElement(document.getElementById('last'), 0.3);

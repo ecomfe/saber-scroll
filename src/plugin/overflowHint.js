@@ -24,8 +24,8 @@ define(function (require) {
         return res;
     }
 
-    function OverflowHint(scroll, options) {
-        this.scroll = scroll;
+    function OverflowHint(scroller, options) {
+        this.scroller = scroller;
         this.clsNamePrefix = options.className || CLS_NAME_PREFIX;
         this.clsNameReg = new RegExp(
             this.clsNamePrefix + '-[^- ]+(\\s+|$)', 'g'
@@ -35,10 +35,10 @@ define(function (require) {
         };
 
         Object.keys(handlers).forEach(function (name) {
-            scroll.on(':' + name, handlers[name]);
+            scroller.on(':' + name, handlers[name]);
         });
 
-        this.render({left: scroll.info.left, top: scroll.info.top});
+        this.render({left: scroller.info.left, top: scroller.info.top});
     }
 
     /**
@@ -48,8 +48,8 @@ define(function (require) {
      * @public
      */
     OverflowHint.prototype.render = function (e) {
-        var scroll = this.scroll;
-        var container = scroll.main.parentNode;
+        var scroller = this.scroller;
+        var container = scroller.main.parentNode;
         var className = container.className;
 
         className = className.replace(this.clsNameReg, '').trim();
@@ -60,7 +60,7 @@ define(function (require) {
             this.clsNamePrefix,
             x >= 0
                 ? 'right'
-                : x <= scroll.minX
+                : x <= scroller.minX
                     ? 'left'
                     : ''
         );
@@ -71,7 +71,7 @@ define(function (require) {
             this.clsNamePrefix,
             y >= 0
                 ? 'bottom'
-                : y <= scroll.minY
+                : y <= scroller.minY
                     ? 'top'
                     : ''
         );
@@ -85,24 +85,24 @@ define(function (require) {
      * @public
      */
     OverflowHint.prototype.destroy = function () {
-        var scroll = this.scroll;
+        var scroller = this.scroller;
         var handlers = this.eventHandlers;
 
         Object.keys(handlers).forEach(function (name) {
-            scroll.off(':' + name, handlers[name]);
+            scroller.off(':' + name, handlers[name]);
         });
 
-        this.scroll = null;
+        this.scroller = null;
     };
 
     // 注册插件
     require('../plugin').register(
         'overflowHint',
-        function (scroll, options) {
+        function (scroller, options) {
             var res = false;
 
             if (options.overflowHint) {
-                res = new OverflowHint(scroll, options.overflowHint);
+                res = new OverflowHint(scroller, options.overflowHint);
             }
 
             return res;

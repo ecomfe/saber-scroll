@@ -13,51 +13,51 @@ define(function () {
      * 启用插件
      *
      * @public
-     * @param {Scroll} scroll
+     * @param {Scrollerer} scroller
      * @param {Object=} options
      */
-    exports.enable = function (scroll, options) {
+    exports.enable = function (scroller, options) {
         var plugin;
         var pluginFactory;
-        var enablePlugins = scroll.plugins || {};
+        var enablePlugins = scroller.plugins || {};
 
         Object.keys(pluginFactories).forEach(function (name) {
             pluginFactory = pluginFactories[name];
             if (!enablePlugins[name]
-                && (plugin = pluginFactory(scroll, options))
+                && (plugin = pluginFactory(scroller, options))
             ) {
                 enablePlugins[name] = plugin;
             }
         });
 
-        scroll.plugins = enablePlugins;
+        scroller.plugins = enablePlugins;
     };
 
     /**
      * 禁用插件
      *
      * @public
-     * @param {Scroll} scroll
+     * @param {Scroller} scroller
      * @param {string=} name
      */
-    exports.disable = function (scroll, name) {
+    exports.disable = function (scroller, name) {
         var names;
 
         if (name) {
             names = [name];
         }
         else {
-            names = Object.keys(scroll.plugins || {});
+            names = Object.keys(scroller.plugins || {});
         }
 
         var plugin;
         names.forEach(function (item) {
-            plugin = scroll.plugins[item];
+            plugin = scroller.plugins[item];
             if (plugin) {
                 if (plugin.destroy) {
                     plugin.destroy();
                 }
-                delete scroll.plugins[item];
+                delete scroller.plugins[item];
             }
         });
     };
@@ -66,10 +66,10 @@ define(function () {
      * 重置所有插件
      *
      * @public
-     * @param {Scroll} scroll
+     * @param {Scroller} scroller
      */
-    exports.reset = function (scroll) {
-        var enablePlugins = scroll.plugins || {};
+    exports.reset = function (scroller) {
+        var enablePlugins = scroller.plugins || {};
 
         Object.keys(enablePlugins).forEach(function (name) {
             if (enablePlugins[name].reset) {
