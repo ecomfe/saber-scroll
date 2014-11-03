@@ -155,7 +155,7 @@ define(function (require) {
                 y: speed.y ? (speed.y > 0 ? -1 : 1) * acceleration : 0
             };
 
-        var time = runner.now();
+        var time = Date.now();
 
         function step() {
 
@@ -163,7 +163,7 @@ define(function (require) {
                 return;
             }
 
-            var now = runner.now();
+            var now = Date.now();
             var dt = now - time;
 
             // 当前速度
@@ -259,7 +259,7 @@ define(function (require) {
         var touch = e.touches ? e.touches[0] : e;
         info.pointX = touch.clientX || touch.pageX;
         info.pointY = touch.clientY || touch.pageY;
-        info.time = runner.now();
+        info.time = Date.now();
         info.dx = info.dy = 0;
         info.dt = 0;
 
@@ -321,7 +321,7 @@ define(function (require) {
         render(scroller, pos);
         scroller.emit('scroll', {left: -1 * pos.left, top: -1 * pos.top});
 
-        var now = runner.now();
+        var now = Date.now();
         info.dt = now - info.time;
         info.time = now;
     }
