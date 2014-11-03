@@ -32,7 +32,7 @@ define(function (require) {
                 + ';border-radius: 3px';
 
         rate = Math.max(rate * 100, 5);
-        if (type == 'horizontal') {
+        if (type === 'horizontal') {
             css += ';bottom:1px'
                     + ';left:0'
                     + ';height:5px'
@@ -54,22 +54,22 @@ define(function (require) {
      * 计算滚动条的高宽，位移
      *
      * @inner
-     * @param {Scroll} scroll
+     * @param {Scroller} scroller
      * @param {Object} info 滚动信息
      * @return {Object}
      */
-    function calculate(scroll, info) {
+    function calculate(scroller, info) {
         var value;
         var res = {};
 
-        var clientHeight = scroll.clientHeight;
-        var clientWidth = scroll.clientWidth;
-        var scrollHeight = scroll.scrollHeight;
-        var scrollWidth = scroll.scrollWidth;
+        var clientHeight = scroller.clientHeight;
+        var clientWidth = scroller.clientWidth;
+        var scrollHeight = scroller.scrollHeight;
+        var scrollWidth = scroller.scrollWidth;
 
         // 计算垂直滚动条高度
-        if (info.top > 0 || info.top < scroll.minY) {
-            value = Math.max(info.top, scroll.minY - info.top);
+        if (info.top > 0 || info.top < scroller.minY) {
+            value = Math.max(info.top, scroller.minY - info.top);
             value = value / scrollHeight;
             res.height = Math.max(
                 5,
@@ -81,8 +81,8 @@ define(function (require) {
         }
 
         // 计算水平滚动条宽度
-        if (info.left > 0 || info.left < scroll.minX) {
-            value = Math.max(info.left, scroll.minX - info.left);
+        if (info.left > 0 || info.left < scroller.minX) {
+            value = Math.max(info.left, scroller.minX - info.left);
             value = value / scrollWidth;
             res.width = Math.max(
                 5,
@@ -115,8 +115,8 @@ define(function (require) {
     function hideBar(ele) {
         runner.transition(
             ele,
-            { opacity: '0' },
-            { duration: 0.3 }
+            {opacity: '0'},
+            {duration: 0.3}
         );
     }
 
@@ -124,10 +124,10 @@ define(function (require) {
      * Scrollbar
      *
      * @constructor
-     * @param {Scroll} scroll
+     * @param {Scroller} scroller
      */
-    function Scrollbar(scroll) {
-        this.scroll = scroll;
+    function Scrollbar(scroller) {
+        this.scroller = scroller;
 
         this.reset();
 
@@ -140,7 +140,7 @@ define(function (require) {
         };
 
         Object.keys(events).forEach(function (eventName) {
-            scroll.on(':' + eventName, events[eventName]);
+            scroller.on(':' + eventName, events[eventName]);
         });
     }
 
@@ -150,12 +150,12 @@ define(function (require) {
      * @public
      */
     Scrollbar.prototype.reset = function () {
-        var scroll = this.scroll;
+        var scroller = this.scroller;
 
         var ele;
-        var wrapper = scroll.main.parentNode;
+        var wrapper = scroller.main.parentNode;
 
-        if (scroll.vertical) {
+        if (scroller.vertical) {
             if (this.verticalBar) {
                 this.verticalBar.style.display = '';
             }
@@ -171,7 +171,7 @@ define(function (require) {
             this.verticalBar.style.display = 'none';
         }
 
-        if (scroll.horizontal) {
+        if (scroller.horizontal) {
             if (this.horizontalBar) {
                 this.horizontalBar.style.display = '';
             }
@@ -202,7 +202,7 @@ define(function (require) {
             if (!item) {
                 return;
             }
-            
+
             if (timer = timers[index]) {
                 clearTimeout(timer);
             }
@@ -243,18 +243,18 @@ define(function (require) {
      * 根据滚动信息渲染滚动条
      *
      * @public
-     * @param {Object}
+     * @param {Object} info
      */
     Scrollbar.prototype.render = function (info) {
         var ele;
         var styles;
-        var scroll = this.scroll;
-        var data = calculate(scroll, info);
+        var scroller = this.scroller;
+        var data = calculate(scroller, info);
 
         // 渲染垂直滚动条
         if (ele = this.verticalBar) {
             styles = {
-                transform: 'translate3d(0, '+ data.top + 'px, 0)',
+                transform: 'translate3d(0, ' + data.top + 'px, 0)',
                 height: data.height
             };
 
@@ -292,11 +292,11 @@ define(function (require) {
      * @public
      */
     Scrollbar.prototype.destroy = function () {
-        var scroll = this.scroll;
+        var scroller = this.scroller;
         var events = this.eventHandler;
 
         Object.keys(events).forEach(function (eventName) {
-            scroll.off(':' + eventName, events[eventName]);
+            scroller.off(':' + eventName, events[eventName]);
         });
 
         var ele;
@@ -310,17 +310,17 @@ define(function (require) {
             this.verticalBar = null;
         }
 
-        this.scroll = null;
+        this.scroller = null;
     };
 
     // 注册插件
     require('../plugin').register(
-        'scrollbar', 
-        function (scroll, options) {
+        'scrollbar',
+        function (scroller, options) {
             var res = false;
 
             if (options.scrollbar) {
-                res = new Scrollbar(scroll, options);
+                res = new Scrollbar(scroller, options);
             }
 
             return res;

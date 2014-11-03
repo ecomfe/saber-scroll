@@ -5,7 +5,7 @@
 
 define(function (require) {
 
-    var Scroll = require('./Scroll');
+    var Scroller = require('./Scroller');
 
     /**
      * 初始化滚动
@@ -20,7 +20,7 @@ define(function (require) {
         if (Object.prototype.toString.call(ele) === '[object String]') {
             ele = document.getElementById(ele);
         }
-        return new Scroll(ele, options);
+        return new Scroller(ele, options);
     };
 
 });

@@ -1,4 +1,5 @@
-# scrollbar
+scrollbar
+===
 
 滚动条插件
 
@@ -6,16 +7,16 @@
 
 ## Usage
 
-```javascript
+```js
 var scroll = require('saber-scroll');
 // 引入scrollbar插件
 require('saber-scroll/plugin/scrollbar');
 
 var scroller = scroll(
-        ele,
-        {
-            // 启用scrollbar插件
-            scrollbar: true
-        }
-    );
+    ele,
+    {
+        // 启用scrollbar插件
+        scrollbar: true
+    }
+);
 ```
