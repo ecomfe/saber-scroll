@@ -1,0 +1,35 @@
+{
+  "name": "saber-scroll",
+  "version": "1.0.0",
+  "description": "为移动端页面开发提供区域滚动功能",
+  "main": "main",
+  "maintainers": [
+    {
+      "name": "treelite",
+      "email": "c.xinle@gmail.com"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "zfkun",
+      "email": "zfkun@msn.com"
+    }
+  ],
+  "dependencies": {
+    "saber-lang": "~1.0.0",
+    "saber-dom": "~1.0.0",
+    "saber-emitter": "~1.0.0",
+    "saber-run": "~1.0.0"
+  },
+  "license": "BSD",
+  "repository": "git://github.com/ecomfe/saber-scroll.git",
+  "bugs": "https://github.com/ecomfe/saber-scroll/issues",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "doc",
+    "demo"
+  ]
+}
