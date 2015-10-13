@@ -280,12 +280,24 @@ define(function (require) {
         }
 
         var touch = e.touches ? e.touches[0] : e;
-        var dx = scroller.horizontal
-                    ? (touch.clientX || touch.pageX) - info.pointX
-                    : 0;
-        var dy = scroller.vertical
-                    ? (touch.clientY || touch.pageY) - info.pointY
-                    : 0;
+        var dx = (touch.clientX || touch.pageX) - info.pointX;
+        var dy = (touch.clientY || touch.pageY) - info.pointY;
+        // 实际滚动方向 true: 水平, false: 垂直
+        var dd = Math.abs(dx) - Math.abs(dy) >= 0;
+        // 可滚动方向
+        var td = scroller.horizontal;
+
+        // 如果用户实际滚动方向与可滚动方向不相符
+        // 就不用滚动了
+        if (info.status === STATUS.PREPARE
+            && !(scroller.horizontal && scroller.vertical)
+            && (dd !== td)
+        ) {
+            return scrollEndHandler(scroller);
+        }
+
+        dx = scroller.horizontal ? dx : 0;
+        dy = scroller.vertical ? dy: 0;
 
         // 阻止页面的滚动
         stopEvent(e);
