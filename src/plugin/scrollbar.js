@@ -15,8 +15,8 @@ define(function (require) {
      * 创建滚动条
      *
      * @inner
-     * @param {string} type
-     * @param {number} rate
+     * @param {string} type 滚动条类型
+     * @param {number} rate 长度比列
      * @return {HTMLElement}
      */
     function createBar(type, rate) {
@@ -54,7 +54,7 @@ define(function (require) {
      * 计算滚动条的高宽，位移
      *
      * @inner
-     * @param {Scroller} scroller
+     * @param {Scroller} scroller 滚动对象
      * @param {Object} info 滚动信息
      * @return {Object}
      */
@@ -110,7 +110,7 @@ define(function (require) {
      * 隐藏bar
      *
      * @inner
-     * @param {HTMLElement} ele
+     * @param {HTMLElement} ele 滚动条元素
      */
     function hideBar(ele) {
         runner.transition(
@@ -124,7 +124,7 @@ define(function (require) {
      * Scrollbar
      *
      * @constructor
-     * @param {Scroller} scroller
+     * @param {Scroller} scroller 滚动对象
      */
     function Scrollbar(scroller) {
         this.scroller = scroller;
@@ -243,7 +243,7 @@ define(function (require) {
      * 根据滚动信息渲染滚动条
      *
      * @public
-     * @param {Object} info
+     * @param {Object} info 滚动信息
      */
     Scrollbar.prototype.render = function (info) {
         var ele;

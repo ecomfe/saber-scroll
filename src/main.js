@@ -13,7 +13,7 @@ define(function (require) {
      * @public
      * @param {HTMLElement|string} ele 需要滚动内容的元素或对应的id
      * @param {Object=} options 配置项
-     * @return {Scroll}
+     * @return {Scroller}
      */
     return function (ele, options) {
         options = options || {};

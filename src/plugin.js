@@ -13,8 +13,8 @@ define(function () {
      * 启用插件
      *
      * @public
-     * @param {Scrollerer} scroller
-     * @param {Object=} options
+     * @param {Scroller} scroller 滚动对象
+     * @param {Object=} options 配置参数
      */
     exports.enable = function (scroller, options) {
         var plugin;
@@ -37,8 +37,8 @@ define(function () {
      * 禁用插件
      *
      * @public
-     * @param {Scroller} scroller
-     * @param {string=} name
+     * @param {Scroller} scroller 滚动对象
+     * @param {string=} name 插件名称
      */
     exports.disable = function (scroller, name) {
         var names;
@@ -66,7 +66,7 @@ define(function () {
      * 重置所有插件
      *
      * @public
-     * @param {Scroller} scroller
+     * @param {Scroller} scroller 滚动对象
      */
     exports.reset = function (scroller) {
         var enablePlugins = scroller.plugins || {};
@@ -82,8 +82,8 @@ define(function () {
      * 注册插件
      *
      * @public
-     * @param {string} name
-     * @param {Function} pluginFactory
+     * @param {string} name 插件名称
+     * @param {Function} pluginFactory 插件构造函数
      */
     exports.register = function (name, pluginFactory) {
         pluginFactories[name] = pluginFactory;

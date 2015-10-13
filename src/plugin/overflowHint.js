@@ -14,6 +14,10 @@ define(function (require) {
      * 添加样式
      *
      * @inner
+     * @param {string} clsName 原有样式名称
+     * @param {string} prefix 自定义样式前缀
+     * @param {string} name 新样式名称
+     * @return {string}
      */
     function addClassName(clsName, prefix, name) {
         var res = clsName;
@@ -24,6 +28,13 @@ define(function (require) {
         return res;
     }
 
+    /**
+     * OverflowHint
+     *
+     * @constructor
+     * @param {Scroller} scroller 滚动对象
+     * @param {Object} options 配置参数
+     */
     function OverflowHint(scroller, options) {
         this.scroller = scroller;
         this.clsNamePrefix = options.className || CLS_NAME_PREFIX;
@@ -46,6 +57,7 @@ define(function (require) {
      * 根据滚动的位置来添加提示样式
      *
      * @public
+     * @param {Object} e 事件参数
      */
     OverflowHint.prototype.render = function (e) {
         var scroller = this.scroller;

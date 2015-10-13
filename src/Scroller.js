@@ -26,11 +26,11 @@ define(function (require) {
      * 设置位置
      *
      * @inner
-     * @param {Scroller} scroller
-     * @param {Object} pos
-     * @param {number=} pos.top
-     * @param {number=} pos.left
-     * @param {number=} pos.duration
+     * @param {Scroller} scroller 滚动对象
+     * @param {Object} pos 目标位置
+     * @param {number=} pos.top Y
+     * @param {number=} pos.left X
+     * @param {number=} pos.duration 滚动方向
      * @return {Promise}
      */
     function render(scroller, pos) {
@@ -66,6 +66,10 @@ define(function (require) {
      * 判断某一方向上是否超出可滚动区域
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
+     * @param {number} value 滚动距离
+     * @param {string} dir 滚动方向
+     * @return {boolean}
      */
     function isOutDir(scroller, value, dir) {
         var min = scroller['min' + (dir === 'x' ? 'X' : 'Y')];
@@ -77,6 +81,9 @@ define(function (require) {
      * 判读是否超出滚动范围
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
+     * @param {Object} pos 目标位置对象
+     * @return {boolean}
      */
     function isScrollOut(scroller, pos) {
         var info  = pos || scroller.info;
@@ -89,6 +96,9 @@ define(function (require) {
      * 使目标位置在滚动条可滚动区域内
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
+     * @param {Object} pos 目标位置对象
+     * @return {Object}
      */
     function normalizePos(scroller, pos) {
         return {
@@ -102,6 +112,7 @@ define(function (require) {
      * 用于滚动超出范围的处理
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
      */
     function resetScroll(scroller) {
         var info = scroller.info;
@@ -119,6 +130,7 @@ define(function (require) {
      * 停止缓动动画
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
      */
     function stopAnimate(scroller) {
         var info = scroller.info;
@@ -134,6 +146,7 @@ define(function (require) {
      * 加速度固定的简单二次变化
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
      */
     function finishScroll(scroller) {
         var info = scroller.info;
@@ -232,7 +245,7 @@ define(function (require) {
      * 阻止默认行为
      *
      * @inner
-     * @param {Event} e
+     * @param {Event} e DOM 事件参数
      */
     function stopEvent(e) {
         e.stopPropagation();
@@ -243,6 +256,8 @@ define(function (require) {
      * touchstart事件处理
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
+     * @param {Event} e DOM 事件参数
      */
     function scrollStartHandler(scroller, e) {
         var info = scroller.info;
@@ -270,6 +285,8 @@ define(function (require) {
      * touchmove事件处理
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
+     * @param {Event} e DOM 事件参数
      */
     function scrollMoveHandler(scroller, e) {
         var info = scroller.info;
@@ -292,11 +309,12 @@ define(function (require) {
             && !(scroller.horizontal && scroller.vertical)
             && (dd !== td)
         ) {
-            return scrollEndHandler(scroller);
+            scrollEndHandler(scroller);
+            return;
         }
 
         dx = scroller.horizontal ? dx : 0;
-        dy = scroller.vertical ? dy: 0;
+        dy = scroller.vertical ? dy : 0;
 
         // 阻止页面的滚动
         stopEvent(e);
@@ -344,6 +362,8 @@ define(function (require) {
      * touchend事件处理
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
+     * @param {Event} e DOM 事件参数
      */
     function scrollEndHandler(scroller, e) {
         var info = scroller.info;
@@ -373,7 +393,7 @@ define(function (require) {
      * 计算可滚动范围
      *
      * @inner
-     * @param {Scroll} scroller
+     * @param {Scroller} scroller 滚动对象
      */
     function calculate(scroller) {
         var wrapper = scroller.main.parentNode;
@@ -397,6 +417,7 @@ define(function (require) {
      * 初始化
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
      */
     function initScroller(scroller) {
         Emitter.mixin(scroller);
@@ -444,6 +465,10 @@ define(function (require) {
      * 滚动到确定位置
      *
      * @inner
+     * @param {Scroller} scroller 滚动对象
+     * @param {number} top Y
+     * @param {number} left X
+     * @param {number} duration 滚动方向
      */
     function scrollTo(scroller, top, left, duration) {
         var pos = normalizePos(scroller, {top: top, left: left});
@@ -477,6 +502,8 @@ define(function (require) {
      * Scroller
      *
      * @constructor
+     * @param {HTMLElement} ele 滚动元素
+     * @param {Object=} options 配置参数
      */
     function Scroller(ele, options) {
         ele = dom.children(ele)[0];
