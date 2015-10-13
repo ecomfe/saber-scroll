@@ -47,16 +47,18 @@ __只滚动区域的第一个子元素__，如果想让区域中的所有元素�
 
 * **ele** `{HTMLElemnt}` 内容需要滚动的元素或者对应的id
 * **options** `{Object=}` 初始化参数
-    * **horizontal** `{boolean=}` 是否可以水平滚动，默认为`true`
-    * **vertical** `{boolean=}` 是否可以垂直滚动，默认为`true`
-    * **overflow** `{boolean=}` 是否可以超出滚动范围，默认为`true`
-* _return_ `{Scroller}` [Scroller](doc/scroller.md)滚动对象
+    * **horizontal** `{boolean=}` 是否可以水平滚动，默认为 `true`
+    * **vertical** `{boolean=}` 是否可以垂直滚动，默认为 `true`
+    * **overflow** `{boolean=}` 是否可以超出滚动范围，默认为 `true`
+    * **minDistance** `{number=}` 最小的可滚动距离，默认为 `10`
+    * **acceleration** `{number=}` 滚动结束后的缓动效果加速度，默认为 `0.0006`
+* _return_ `{Scroller}` [Scroller](doc/scroller.md) 滚动对象
 
-滚动条是以插件形式实现的，在使用时除了设置`options.scrollbar`外，还需要引入`saber-scroll/plugin/scrollbar`模块
+滚动条是以插件形式实现的，在使用时除了设置`options.scrollbar = true`外，还需要引入 `saber-scroll/plugin/scrollbar` 模块
 
 ### Classes
 
-* [Scroller](doc/scroller.md) [scroll()](#scrollele-options)创建的滚动对象
+* [Scroller](doc/scroller.md) [scroll()](#scrollele-options) 创建的滚动对象
 
 ### Plugins
 
