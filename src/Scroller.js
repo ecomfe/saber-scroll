@@ -144,16 +144,15 @@ define(function (require) {
 
         // 初速度
         var speed = {
-                x: info.dx / info.dt,
-                y: info.dy / info.dt
-            };
+            x: info.dx / info.dt,
+            y: info.dy / info.dt
+        };
 
-        // this's a magic
-        var acceleration = 0.0006;
+        var acceleration = scroller.acceleration;
         var acce = {
-                x: speed.x ? (speed.x > 0 ? -1 : 1) * acceleration : 0,
-                y: speed.y ? (speed.y > 0 ? -1 : 1) * acceleration : 0
-            };
+            x: speed.x ? (speed.x > 0 ? -1 : 1) * acceleration : 0,
+            y: speed.y ? (speed.y > 0 ? -1 : 1) * acceleration : 0
+        };
 
         var time = Date.now();
 
@@ -303,7 +302,10 @@ define(function (require) {
         stopEvent(e);
 
         // 忽略过短的移动
-        if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+        var minDistance = scroller.minDistance;
+        if (Math.abs(dx) < minDistance
+            && Math.abs(dy) < minDistance
+        ) {
             return;
         }
 
@@ -463,7 +465,12 @@ define(function (require) {
         // 可水平滚动
         horizontal: true,
         // 可超出可滚动区域
-        overflow: true
+        overflow: true,
+        // 最小的滚动距离
+        minDistance: 10,
+        // 缓动效果加速度
+        // It's magic
+        acceleration: 0.0006
     };
 
     /**
