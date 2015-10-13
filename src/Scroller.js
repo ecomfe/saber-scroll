@@ -16,7 +16,7 @@ define(function (require) {
      * 状态值枚举
      * @type {Object}
      */
-    var STATUS = {
+    var Status = {
         IDLE: 0, // 空闲状态
         PREPARE: 1, // 准备状态
         SCROLLING: 2 // 滚动中
@@ -110,7 +110,7 @@ define(function (require) {
         pos.duration = 0.5;
 
         render(scroller, pos).then(function () {
-            info.status = STATUS.IDLE;
+            info.status = Status.IDLE;
             scroller.emit(':end');
         });
     }
@@ -140,7 +140,7 @@ define(function (require) {
 
         // 缓动过程中认为是空闲状态
         // 可以被取消（比如再次touch）
-        info.status = STATUS.IDLE;
+        info.status = Status.IDLE;
 
         // 初速度
         var speed = {
@@ -216,7 +216,7 @@ define(function (require) {
             else {
                 // 缓动完成 检查是否在滚动范围内
                 if (isScrollOut(scroller)) {
-                    info.status = STATUS.SCROLLING;
+                    info.status = Status.SCROLLING;
                     resetScroll(scroller);
                 }
                 else {
@@ -248,7 +248,7 @@ define(function (require) {
     function scrollStartHandler(scroller, e) {
         var info = scroller.info;
 
-        if (info.status === STATUS.SCROLLING) {
+        if (info.status === Status.SCROLLING) {
             return;
         }
 
@@ -263,7 +263,7 @@ define(function (require) {
         info.dx = info.dy = 0;
         info.dt = 0;
 
-        info.status = STATUS.PREPARE;
+        info.status = Status.PREPARE;
         scroller.info = info;
     }
 
@@ -289,7 +289,7 @@ define(function (require) {
 
         // 如果用户实际滚动方向与可滚动方向不相符
         // 就不用滚动了
-        if (info.status === STATUS.PREPARE
+        if (info.status === Status.PREPARE
             && !(scroller.horizontal && scroller.vertical)
             && (dd !== td)
         ) {
@@ -307,9 +307,9 @@ define(function (require) {
             return;
         }
 
-        if (info.status === STATUS.PREPARE) {
+        if (info.status === Status.PREPARE) {
             // 进入滚动状态
-            info.status = STATUS.SCROLLING;
+            info.status = Status.SCROLLING;
             scroller.emit(':start');
         }
 
@@ -321,9 +321,9 @@ define(function (require) {
         info.dy = isOutDir(scroller, info.top, 'y') ? dy / 3 : dy;
 
         var pos = {
-                top: info.top + info.dy,
-                left: info.left + info.dx
-            };
+            top: info.top + info.dy,
+            left: info.left + info.dx
+        };
 
         // 进行超出滚动判断
         if (!scroller.overflow) {
@@ -346,8 +346,8 @@ define(function (require) {
     function scrollEndHandler(scroller, e) {
         var info = scroller.info;
 
-        if (info.status !== STATUS.SCROLLING) {
-            info.status = STATUS.IDLE;
+        if (info.status !== Status.SCROLLING) {
+            info.status = Status.IDLE;
             return;
         }
 
@@ -357,7 +357,7 @@ define(function (require) {
 
         // 是否还在滚动中
         if (!info.dt) {
-            info.status = STATUS.IDLE;
+            info.status = Status.IDLE;
         }
         else if (isScrollOut(scroller)) {
             resetScroll(scroller);
@@ -404,7 +404,7 @@ define(function (require) {
         scroller.info = {
             top: 0,
             left: 0,
-            status: STATUS.IDLE
+            status: Status.IDLE
         };
 
         scroller.disabled = false;
@@ -433,6 +433,8 @@ define(function (require) {
             ele.parentNode.addEventListener(eventName, events[eventName], false);
         });
 
+        // see issue 3
+        // https://github.com/ecomfe/saber-scroll/issues/3
         dom.setStyle(ele, 'text-size-adjust', '100%');
     }
 
@@ -454,15 +456,15 @@ define(function (require) {
      * @type {Object}
      */
     var DEFAUTL_PROPERTYS = {
-            // 是否显示滚动条
-            scrollbar: false,
-            // 可垂直滚动
-            vertical: true,
-            // 可水平滚动
-            horizontal: true,
-            // 可超出可滚动区域
-            overflow: true
-        };
+        // 是否显示滚动条
+        scrollbar: false,
+        // 可垂直滚动
+        vertical: true,
+        // 可水平滚动
+        horizontal: true,
+        // 可超出可滚动区域
+        overflow: true
+    };
 
     /**
      * Scroller
@@ -600,7 +602,7 @@ define(function (require) {
         }
 
         this.disabled = true;
-        if (this.info.status === STATUS.SCROLLING) {
+        if (this.info.status === Status.SCROLLING) {
             scrollEndHandler(this);
             stopAnimate(this);
         }
